@@ -1,0 +1,10 @@
+{
+	"name": "Red Sparrows Ticket Scan",
+	"short_name": "Red Sparrows Tickets",
+	"display": "standalone",
+	"start_url": "https://red-sparrows.getnono.de/admin/scan",
+	"orientation": "portrait",
+	"background_color": "#293133",
+	"theme_color": "#DE020F",
+	"description": "Red Sparrows Ticket Scan App"
+}

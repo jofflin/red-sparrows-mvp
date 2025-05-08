@@ -1,4 +1,3 @@
-import SeatmapSection from "@/components/SeatmapSection";
 import TicketSelection from "@/components/TicketSelection";
 import {
 	Card,
@@ -9,10 +8,9 @@ import {
 } from "@/components/ui/card";
 import { VENUE } from "@/lib/globals";
 import { createClient } from "@/utils/supabase/server";
-import { CalendarDays, Clock, DoorOpen, Info, MapPin, X } from "lucide-react";
+import { CalendarDays, Clock, DoorOpen, Info, MapPin } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { useState } from "react";
 
 export default async function EventPage({
 	params,
@@ -42,9 +40,14 @@ export default async function EventPage({
 		status: ticketStatus,
 	} = await supabase
 		.from("tickets")
-		.select("*")
+		.select(`
+			reserved_until,
+			redeemed_at,
+			bought_at,
+			session_id,
+			couponId
+		`)
 		.eq("event_id", event.id)
-		.filter("bought_at", "not.is", null);
 
 	if (ticketError || ticketStatus !== 200) {
 		console.error(ticketError);
@@ -55,7 +58,7 @@ export default async function EventPage({
 		data: prices,
 		error: priceError,
 		status: priceStatus,
-	} = await supabase.from("ticket_categories").select("*");
+	} = await supabase.from("ticket_categories").select("*").neq("id", 6);
 
 	if (priceError || priceStatus !== 200) {
 		console.error(priceError);

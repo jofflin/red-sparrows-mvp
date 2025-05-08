@@ -1,14 +1,15 @@
 'use client'
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { login } from "./actions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
 import { AlertCircle, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useState } from "react";
+import { login } from "./actions";
 
 export default function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -16,7 +17,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-
+    setIsLoading(true)
     if (!email || !password) {
       setError('Bitte fülle alle Felder aus.')
       return
@@ -26,6 +27,8 @@ export default function LoginPage() {
       await login({ email, password })
     } catch (err) {
       setError('Falsche E-Mail oder Passwort.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -69,7 +72,7 @@ export default function LoginPage() {
             )}
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isLoading}>
               Log In
             </Button>
             <div className="flex justify-between w-full text-sm">

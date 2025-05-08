@@ -8,10 +8,9 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { HOMEPAGE_URL, VENUE } from "@/lib/globals";
-import { logos } from "@/utils/email/logos";
-import { getPdf } from "@/utils/email/send-confirmation";
+import type { Database } from "@/utils/supabase/database.types";
 import { createClient } from "@/utils/supabase/server";
-import { Calendar, CheckCircle, Download, MapPin, Ticket } from "lucide-react";
+import { Calendar, CheckCircle, Download, Home, MapPin, Ticket } from "lucide-react";
 import Link from "next/link";
 import DownloadButton from "./DownloadButton";
 
@@ -45,16 +44,14 @@ export default async function SuccessPage({
 		return <ErrorPage />;
 	}
 
-	const { data: event, error: eventError } = await supabase
+	const { data: events, error: eventError } = await supabase
 		.from("events")
 		.select("*")
-		.eq("id", tickets[0].event_id)
-		.maybeSingle();
 	if (eventError) {
 		console.error(eventError);
 		return <ErrorPage />;
 	}
-	if (!event) {
+	if (!events) {
 		console.error("No data returned from supabase");
 		return <ErrorPage />;
 	}
@@ -77,24 +74,47 @@ export default async function SuccessPage({
 		return category?.name || "Unbekannt";
 	};
 
-	// Group tickets by category
-	const ticketsByCategory = tickets.reduce(
-		(acc, ticket) => {
-			const key = `${ticket.ticket_category}`;
-			if (!acc[key]) {
-				acc[key] = {
-					category: ticket.ticket_category,
-					count: 0,
-				};
+
+
+	let ticketGroups: {
+		event: Database["public"]["Tables"]["events"]["Row"],
+		tickets: {
+			categoryName: string,
+			amount: number,
+		}[]
+	}[] = [];
+
+	for (const event of events) {
+		const ticketsForEvent = tickets.filter((ticket) => ticket.event_id === event.id);
+		console.log(ticketsForEvent.length);
+		const ticketList: {
+			categoryName: string,
+			amount: number,
+		}[] = [];
+		for (const ticket of ticketsForEvent) {
+			const category = categoryMapper(ticket.ticket_category);
+			const existingTicket = ticketList.find((t) => t.categoryName === category);
+			if (existingTicket) {
+				existingTicket.amount++;
+			} else {
+				ticketList.push({
+					categoryName: category,
+					amount: 1,
+				});
 			}
-			acc[key].count++;
-			return acc;
-		},
-		{} as Record<string, { category: number; count: number }>,
-	);
+		}
+		ticketGroups.push({
+			event,
+			tickets: ticketList,
+		});
+	}
+
+	ticketGroups = ticketGroups.sort((a, b) => {
+		return new Date(a.event.start_time).getTime() - new Date(b.event.start_time).getTime();
+	});
 
 	return (
-		<div className="container mx-auto px-4 py-8 max-w-2xl mt-24">
+		<div className="container mx-auto px-4 py-8 max-w-2xl mt-24 space-y-4">
 			<Card className="w-full">
 				<CardHeader>
 					<div className="flex items-center space-x-2">
@@ -109,40 +129,6 @@ export default async function SuccessPage({
 						Vielen Dank für Ihre Bestellung. Ihre Tickets wurden erfolgreich
 						gekauft.
 					</p>
-					<div className="space-y-4">
-						<h3 className="text-xl font-semibold">{event.name}</h3>
-						<div className="flex items-center space-x-2 text-gray-600">
-							<Calendar className="h-5 w-5 text-secondary-500" />
-							<span>
-								{new Date(event.start_time).toLocaleString("de-De", {
-									dateStyle: "full",
-									timeStyle: "short",
-									timeZone: "Europe/Berlin",
-								})} Uhr
-							</span>
-						</div>
-						<div className="flex items-center space-x-2 text-gray-600">
-							<MapPin className="h-5 w-5 text-secondary-500" />
-							<span>{VENUE}</span>
-						</div>
-					</div>
-					<div className="space-y-2">
-						<h4 className="font-semibold">Tickets:</h4>
-						{Object.values(ticketsByCategory).map((group, index) => (
-							<div
-								key={group.category}
-								className="flex justify-between items-center py-2 border-b last:border-0"
-							>
-								<div className="flex flex-col">
-									<span className="font-medium">Freie Platzwahl</span>
-									<span className="text-sm text-gray-600">
-										{categoryMapper(group.category)}
-									</span>
-								</div>
-								<span className="font-medium text-secondary-500">{group.count}x</span>
-							</div>
-						))}
-					</div>
 					<div className="mt-4 p-4 bg-secondary-50 rounded-lg">
 						<p className="text-sm text-secondary-700">
 							Die Tickets wurden an Ihre E-Mail-Adresse gesendet. Bitte
@@ -150,21 +136,61 @@ export default async function SuccessPage({
 						</p>
 					</div>
 				</CardContent>
-				<CardFooter className="flex flex-col space-y-4">
-					<DownloadButton tickets={tickets} event={event} categories={categories} logos={logos} />
+				<CardFooter className="flex flex-col space-y-4 w-full">
+					<DownloadButton tickets={tickets} events={events} categories={categories} />
 					<Button variant="outline" className="w-full" asChild>
 						<Link href="/">
-							<Ticket className="mr-2 h-4 w-4" />
+							<Ticket className="mr-2 h-4 w-4 text-secondary-500" />
 							Mehr Spiele
 						</Link>
 					</Button>
 					<Button variant="outline" className="w-full" asChild>
 						<Link target="_blank" href={HOMEPAGE_URL}>
+							<Home className="mr-2 h-4 w-4 text-secondary-500" />
 							Zur Homepage
 						</Link>
 					</Button>
 				</CardFooter>
 			</Card>
+			{ticketGroups.map((group) => (
+				<Card key={group.event.id}>
+					<CardHeader>
+						<CardTitle>{group.event.name}</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-4">
+							<div className="flex items-center space-x-2 text-gray-600">
+								<Calendar className="h-5 w-5 text-secondary-500" />
+								<span>
+									{new Date(group.event.start_time).toLocaleString("de-De", {
+										dateStyle: "full",
+										timeStyle: "short",
+										timeZone: "Europe/Berlin",
+									})} Uhr
+								</span>
+							</div>
+							<div className="flex items-center space-x-2 text-gray-600">
+								<MapPin className="h-5 w-5 text-secondary-500" />
+								<span>{VENUE}</span>
+							</div>
+						</div>
+						<div className="space-y-2 mt-4">
+							<h4 className="font-semibold">Tickets:</h4>
+							{group.tickets.map((ticket) => (
+								<div
+									key={ticket.categoryName}
+									className="flex justify-between items-center py-2 border-b last:border-0"
+								>
+									<span className="text-md text-gray-600">
+										{ticket.categoryName}
+									</span>
+									<span className="font-medium text-secondary-500">{ticket.amount}x</span>
+								</div>
+							))}
+						</div>
+					</CardContent>
+				</Card>
+			))}
 		</div>
 	);
 }

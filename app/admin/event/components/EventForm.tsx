@@ -24,6 +24,7 @@ interface EventFormProps {
 		endDateTime: string;
 		presaleStart: string;
 		presaleEnd: string;
+		couponEnd: string;
 		admissionStart: string;
 		tickets: number;
 	}) => Promise<void>;
@@ -65,6 +66,11 @@ export function EventForm({
 			? new Date(event.admission_start).toISOString().slice(0, 16)
 			: new Date().toISOString().slice(0, 16),
 	);
+	const [couponEnd, setCouponEnd] = useState(
+		event?.coupon_end
+			? new Date(event.coupon_end).toISOString().slice(0, 16)
+			: new Date().toISOString().slice(0, 16),
+	);
 	const [tickets, setTickets] = useState(event?.tickets || 100);
 	const [error, setError] = useState("");
 
@@ -87,7 +93,8 @@ export function EventForm({
 			!startDateTime ||
 			!presaleStart ||
 			!presaleEnd ||
-			!admissionStart
+			!admissionStart ||
+			!couponEnd
 		) {
 			setError("Bitte fülle alle Felder aus");
 			return;
@@ -104,6 +111,7 @@ export function EventForm({
 		const presaleStartDate = new Date(presaleStart);
 		const presaleEndDate = new Date(presaleEnd);
 		const admissionStartDate = new Date(admissionStart);
+		const couponEndDate = new Date(couponEnd);
 		if (presaleStartDate >= presaleEndDate) {
 			setError("VVK-Start muss vor VVK-Ende liegen");
 			return;
@@ -119,6 +127,11 @@ export function EventForm({
 			return;
 		}
 
+		if (couponEndDate >= start) {
+			setError("Coupon-Ende muss vor der Startzeit liegen");
+			return;
+		}
+
 		await onSubmit({
 			eventName,
 			eventDescription,
@@ -126,6 +139,7 @@ export function EventForm({
 			endDateTime,
 			presaleStart,
 			presaleEnd,
+			couponEnd,
 			admissionStart,
 			tickets: priceNumA,
 		});
@@ -210,18 +224,31 @@ export function EventForm({
 							/>
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="start-time" className="text-lg">
-								Anpfiff
+							<Label htmlFor="coupon-end" className="text-lg">
+								Coupons verfügbar bis
 							</Label>
 							<Input
-								id="start-time"
+								id="coupon-end"
 								type="datetime-local"
-								value={startDateTime}
-								onChange={(e) => setStartDateTime(e.target.value)}
+								value={couponEnd}
+								onChange={(e) => setCouponEnd(e.target.value)}
 								required
 								className="text-lg"
 							/>
 						</div>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="start-time" className="text-lg">
+							Anpfiff
+						</Label>
+						<Input
+							id="start-time"
+							type="datetime-local"
+							value={startDateTime}
+							onChange={(e) => setStartDateTime(e.target.value)}
+							required
+							className="text-lg"
+						/>
 					</div>
 					<div className="space-y-2">
 						<Label htmlFor="tickets" className="text-lg">

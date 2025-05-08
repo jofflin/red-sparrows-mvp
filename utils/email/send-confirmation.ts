@@ -7,8 +7,6 @@ import { generate } from "@pdfme/generator";
 import { barcodes, image, text } from "@pdfme/schemas";
 import { PDFDocument } from "pdf-lib";
 import { Resend } from "resend";
-import { logos } from "./logos";
-import { baur, bauverein, edeka, klaus, sparkasse, vgw } from "./sponsors";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const logo =
@@ -155,22 +153,18 @@ const template: Template = {
 
 export const sendConfirmation = async ({
 	email,
-	event,
+	events,
 	name,
 	tickets,
 	categories,
 }: {
 	tickets: Database["public"]["Tables"]["tickets"]["Row"][];
-	event: Database["public"]["Tables"]["events"]["Row"];
+	events: Database["public"]["Tables"]["events"]["Row"][];
 	email: string;
 	name: string;
 	categories: Database["public"]["Tables"]["ticket_categories"]["Row"][];
 }) => {
 	const pdfs: Uint8Array[] = [];
-
-	const imageMapper = (id: number) => {
-		return logos[id as unknown as "5" | "6" | "7" | "8"];
-	};
 
 	const categoryMapper = (id: number) => {
 		const category = categories.find((c) => c.id === id);
@@ -178,6 +172,11 @@ export const sendConfirmation = async ({
 	};
 
 	for (let i = 0; i < tickets.length; i++) {
+		const event = events.find((e) => e.id === tickets[i].event_id);
+		if (!event) {
+			console.error("Event not found");
+			continue;
+		}
 		const inputs = [
 			{
 				title: `Tickets für das Spiel am ${new Date(
@@ -235,11 +234,9 @@ export const sendConfirmation = async ({
 		subject: "Ihre Tickets",
 		react: EmailTemplate({
 			name,
-			event_name: event.name,
 			location: VENUE,
-			start_time: event.start_time,
 		}),
-		html: `Hallo, ${name}!\n\nSie haben Tickets für das Event ${event.name} am ${new Date(event.start_time).toLocaleString("de-De", { dateStyle: "full", timeStyle: "short" })} gekauft.\nOrt: ${VENUE}\nWir freuen uns darauf, Sie dort zu sehen!\nBitte beachten Sie, dass das Ticket in Form eines QR Codes vorliegt. Diesen können Sie an der Veranstaltung vorzeigen.\nZudem benötigen Sie einen gültigen Lichtbildausweis für ermäßigte Tickets.`,
+		html: `Hallo, ${name}!\n\nSie haben Tickets für die Red Sparrows erworben.\nOrt: ${VENUE}\nWir freuen uns darauf, Sie dort zu sehen!\nBitte beachten Sie, dass das Ticket in Form eines QR Codes vorliegt. Diesen können Sie an der Veranstaltung vorzeigen.\nZudem benötigen Sie einen gültigen Lichtbildausweis, ihre Dauerkarte oder je nach Kategorie eine Identifikationsform.`,
 		attachments: [
 			{
 				content: pdfBytes,
@@ -252,71 +249,4 @@ export const sendConfirmation = async ({
 	}
 
 	return Response.json(data);
-};
-
-
-export const getPdf = async (tickets: Database["public"]["Tables"]["tickets"]["Row"][], event: Database["public"]["Tables"]["events"]["Row"], categories: Database["public"]["Tables"]["ticket_categories"]["Row"][], logos: Record<string, string>) => {
-	const pdfs: Uint8Array[] = [];
-
-	const categoryMapper = (id: number) => {
-		const category = categories.find((c) => c.id === id);
-		return category?.name || "Normal";
-	};
-
-	const imageMapper = (id: number) => {
-		return logos[id as unknown as "5" | "6" | "7" | "8"];
-	};
-
-	for (let i = 0; i < tickets.length; i++) {
-		const inputs = [
-			{
-				title: `Tickets für das Spiel am ${new Date(
-					event.start_time,
-				).toLocaleString("de-DE", {
-					dateStyle: "full",
-					timeStyle: "short",
-					timeZone: "Europe/Berlin",
-				})} Uhr`,
-				event: `${event.name} (${VENUE})`,
-				location: `Ticketkategorie: ${categoryMapper(tickets[i].ticket_category)}`,
-				info: "Bitte zeigen Sie diesen QR-Code beim Einlass vor.\nErmäßigungen sind nur mit gültigem Ausweis gültig\n\nAGB: https://red-sparrows.getnono.de/agb\nDatenschutz: https://red-sparrows.getnono.de/impressum\nImpressum: https://red-sparrows.getnono.de/impressum",
-				qr: tickets[i].scan_id || "",
-				"code-text": tickets[i].scan_id || "",
-				"sg-logo": logo,
-				// edeka: edeka,
-				// klaus: klaus,
-				// sparkasse: sparkasse,
-				// vgw: vgw,
-				// bauverein: bauverein,
-				// baur: baur,
-				// gameImage: imageMapper(5),
-			},
-		];
-
-		pdfs.push(
-			await generate({
-				inputs,
-				template,
-				plugins: {
-					text,
-					qrcode: barcodes.qrcode,
-					image,
-				},
-			}),
-		);
-	}
-
-	const pdfDoc = await PDFDocument.create();
-	for (const pdf of pdfs) {
-		const pdfBytes = await PDFDocument.load(pdf);
-		const copiedPages = await pdfDoc.copyPages(
-			pdfBytes,
-			pdfBytes.getPageIndices(),
-		);
-		for (const page of copiedPages) {
-			pdfDoc.addPage(page);
-		}
-	}
-	const pdfBytes = await pdfDoc.save();
-	return pdfBytes;
 };

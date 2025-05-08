@@ -9,6 +9,7 @@ import type Stripe from "stripe";
 type BlockTicket = Database["public"]["Tables"]["tickets"]["Row"];
 
 type CheckoutData = {
+	couponId: number | null;
 	eventId: number;
 	prices: Database["public"]["Tables"]["ticket_categories"]["Row"][];
 	ticketSelection: {
@@ -16,6 +17,7 @@ type CheckoutData = {
 		amount: number;
 	}[];
 };
+
 
 export async function createCheckoutSession(
 	data: CheckoutData,
@@ -35,6 +37,7 @@ export async function createCheckoutSession(
 		eventId: data.eventId,
 		prices: data.prices,
 		ticketSelection: data.ticketSelection,
+		couponId: data.couponId,
 	});
 
 	if (!isReserved) {
@@ -67,6 +70,8 @@ const createLineItems = (data: {
 }): Stripe.Checkout.SessionCreateParams.LineItem[] => {
 	let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
+	console.log("data", data);
+
 	for (const ticket of data.ticketSelection) {
 		const price = data.prices.find((p) => p.name === ticket.category);
 		if (price) {
@@ -84,8 +89,6 @@ const createLineItems = (data: {
 	}
 	lineItems = lineItems.filter((item) => item.quantity && item.quantity > 0);
 
-	console.log(lineItems);
-
 	return lineItems;
 };
 
@@ -93,10 +96,12 @@ const reserveTickets = async ({
 	sessionId,
 	eventId,
 	prices,
+	couponId,
 	ticketSelection,
 }: {
 	sessionId: string;
 	eventId: number;
+	couponId: number | null;
 	prices: Database["public"]["Tables"]["ticket_categories"]["Row"][];
 	ticketSelection: { category: string; amount: number }[];
 }): Promise<boolean> => {
@@ -121,21 +126,70 @@ const reserveTickets = async ({
 	for (const ticket of ticketSelection) {
 		const price = prices.find((p) => p.name === ticket.category);
 		if (price) {
-			// Normal tickets
-			for (let i = 0; i < ticket.amount; i++) {
-				tickets.push({
-					event_id: eventId,
-					ticket_category: price.id,
-					session_id: sessionId,
-					scan_id: generateRandomString(),
-					reserved_until: new Date(Date.now() + 15 * 60 * 1000)
-						.toISOString()
-						.replace("T", " ")
-						.replace("Z", "+00:00"),
-					created_at: now,
-					bought_at: null,
-					redeemed_at: null,
-				});
+			if (ticket.category.includes("Dauerkarten")) {
+				for (let i = 0; i < ticket.amount; i++) {
+					tickets.push({
+						event_id: 2,
+						ticket_category: price.id,
+						session_id: sessionId,
+						scan_id: generateRandomString(),
+						reserved_until: new Date(Date.now() + 15 * 60 * 1000)
+							.toISOString()
+							.replace("T", " ")
+							.replace("Z", "+00:00"),
+						created_at: now,
+						bought_at: null,
+						redeemed_at: null,
+						couponId
+					});
+					tickets.push({
+						event_id: 4,
+						ticket_category: price.id,
+						session_id: sessionId,
+						scan_id: generateRandomString(),
+						reserved_until: new Date(Date.now() + 15 * 60 * 1000)
+							.toISOString()
+							.replace("T", " ")
+							.replace("Z", "+00:00"),
+						created_at: now,
+						bought_at: null,
+						redeemed_at: null,
+						couponId
+					});
+					tickets.push({
+						event_id: 5,
+						ticket_category: price.id,
+						session_id: sessionId,
+						scan_id: generateRandomString(),
+						reserved_until: new Date(Date.now() + 15 * 60 * 1000)
+							.toISOString()
+							.replace("T", " ")
+							.replace("Z", "+00:00"),
+						created_at: now,
+						bought_at: null,
+						redeemed_at: null,
+						couponId
+					});
+				}
+
+			} else {
+				// Normal tickets
+				for (let i = 0; i < ticket.amount; i++) {
+					tickets.push({
+						event_id: eventId,
+						ticket_category: price.id,
+						session_id: sessionId,
+						scan_id: generateRandomString(),
+						reserved_until: new Date(Date.now() + 15 * 60 * 1000)
+							.toISOString()
+							.replace("T", " ")
+							.replace("Z", "+00:00"),
+						created_at: now,
+						bought_at: null,
+						redeemed_at: null,
+						couponId
+					});
+				}
 			}
 		}
 	}

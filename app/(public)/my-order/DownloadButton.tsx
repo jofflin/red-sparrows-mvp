@@ -1,7 +1,6 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { VENUE } from "@/lib/globals";
-import { getPdf } from "@/utils/email/send-confirmation";
 import { logo, template } from "@/utils/logo";
 import type { Database } from "@/utils/supabase/database.types";
 import { generate } from "@pdfme/generator";
@@ -11,12 +10,11 @@ import { PDFDocument } from "pdf-lib";
 
 type DownloadButtonProps = {
     tickets: Database["public"]["Tables"]["tickets"]["Row"][];
-    event: Database["public"]["Tables"]["events"]["Row"];
+    events: Database["public"]["Tables"]["events"]["Row"][];
     categories: Database["public"]["Tables"]["ticket_categories"]["Row"][];
-    logos: Record<string, string>;
 };
 
-export default function DownloadButton({ tickets, event, categories, logos }: DownloadButtonProps) {
+export default function DownloadButton({ tickets, events, categories }: DownloadButtonProps) {
 
     const downloadTickets = async () => {
         const pdfs: Uint8Array[] = [];
@@ -27,6 +25,11 @@ export default function DownloadButton({ tickets, event, categories, logos }: Do
         };
 
         for (let i = 0; i < tickets.length; i++) {
+            const event = events.find((e) => e.id === tickets[i].event_id);
+            if (!event) {
+                console.error("Event not found");
+                continue;
+            }
             const inputs = [
                 {
                     title: `Tickets für das Spiel am ${new Date(
@@ -85,7 +88,7 @@ export default function DownloadButton({ tickets, event, categories, logos }: Do
     };
 
     return (
-        <Button onClick={downloadTickets}>
+        <Button onClick={downloadTickets} className="w-full">
             <Download className="h-4 w-4" />
             Tickets herunterladen
         </Button>

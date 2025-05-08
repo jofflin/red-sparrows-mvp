@@ -107,13 +107,19 @@ export default async function EventOverviewPage() {
 						</div>
 					</div>
 				</CardContent>
-				<CardFooter>
-					<Link href={`/admin/event/${event.id}`}>
-						<Button variant="outline">
+				<CardFooter className="flex flex-col gap-2 w-full">
+					<Button variant="outline" className="w-full" asChild>
+						<Link href={`/admin/event/${event.id}`} >
 							<Ticket className="mr-2 h-4 w-4" />
 							Event verwalten
-						</Button>
-					</Link>
+						</Link>
+					</Button>
+					<Button variant="outline" className="w-full" asChild>
+						<Link href={`/admin/event/${event.id}/coupons`}>
+							<Ticket className="mr-2 h-4 w-4" />
+							Coupons verwalten
+						</Link>
+					</Button>
 				</CardFooter>
 			</Card>
 		));

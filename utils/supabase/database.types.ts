@@ -9,9 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      coupons: {
+        Row: {
+          amount: number
+          code: string
+          eventId: number
+          id: number
+          type: string
+        }
+        Insert: {
+          amount: number
+          code: string
+          eventId: number
+          id?: number
+          type: string
+        }
+        Update: {
+          amount?: number
+          code?: string
+          eventId?: number
+          id?: number
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupons_eventId_fkey"
+            columns: ["eventId"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           admission_start: string
+          coupon_end: string
           created_at: string
           description: string
           end_time: string
@@ -24,6 +57,7 @@ export type Database = {
         }
         Insert: {
           admission_start: string
+          coupon_end: string
           created_at?: string
           description: string
           end_time: string
@@ -36,6 +70,7 @@ export type Database = {
         }
         Update: {
           admission_start?: string
+          coupon_end?: string
           created_at?: string
           description?: string
           end_time?: string
@@ -99,6 +134,7 @@ export type Database = {
       tickets: {
         Row: {
           bought_at: string | null
+          couponId: number | null
           created_at: string
           event_id: number
           id: number
@@ -110,6 +146,7 @@ export type Database = {
         }
         Insert: {
           bought_at?: string | null
+          couponId?: number | null
           created_at?: string
           event_id: number
           id?: number
@@ -121,6 +158,7 @@ export type Database = {
         }
         Update: {
           bought_at?: string | null
+          couponId?: number | null
           created_at?: string
           event_id?: number
           id?: number
@@ -131,6 +169,13 @@ export type Database = {
           ticket_category?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "tickets_couponId_fkey"
+            columns: ["couponId"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tickets_event_id_fkey"
             columns: ["event_id"]

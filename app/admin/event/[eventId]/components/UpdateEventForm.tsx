@@ -18,6 +18,7 @@ export function UpdateEventForm({ event }: UpdateEventFormProps) {
 		endDateTime: string;
 		presaleStart: string;
 		presaleEnd: string;
+		couponEnd: string;
 		tickets: number;
 		admissionStart: string;
 	}) => {

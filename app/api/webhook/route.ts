@@ -92,13 +92,11 @@ const fulfillOrder = async (session: Stripe.Checkout.Session) => {
 		return;
 	}
 
-	const { data: event } = await supabase
+	const { data: events } = await supabase
 		.from("events")
 		.select("*")
-		.eq("id", tickets[0].event_id)
-		.single();
 
-	if (!event) {
+	if (!events) {
 		console.error("No event found");
 		return;
 	}
@@ -113,7 +111,7 @@ const fulfillOrder = async (session: Stripe.Checkout.Session) => {
 	}
 
 	return await sendConfirmation({
-		event,
+		events,
 		tickets,
 		email: session.customer_details?.email as string,
 		name: session.customer_details?.name as string,

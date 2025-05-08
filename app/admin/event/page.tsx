@@ -15,6 +15,7 @@ export default function EventCreationPage() {
 		endDateTime: string;
 		presaleStart: string;
 		presaleEnd: string;
+		couponEnd: string;
 		tickets: number;
 		admissionStart: string;
 	}) => {

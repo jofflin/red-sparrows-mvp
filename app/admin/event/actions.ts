@@ -11,6 +11,7 @@ export async function createEvent({
 	endDateTime,
 	presaleStart,
 	presaleEnd,
+	couponEnd,
 	tickets,
 	admissionStart,
 }: {
@@ -20,6 +21,7 @@ export async function createEvent({
 	endDateTime: string;
 	presaleStart: string;
 	presaleEnd: string;
+	couponEnd: string;
 	tickets: number;
 	admissionStart: string;
 }) {
@@ -29,23 +31,23 @@ export async function createEvent({
 	const startTime = new Date(startDateTime)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 	const endTime = new Date(endDateTime)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 	const presaleStartTime = new Date(presaleStart)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 	const presaleEndTime = new Date(presaleEnd)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 	const admissionStartTime = new Date(admissionStart)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 
 	const { error } = await supabase.from("events").insert({
 		name: eventName,
@@ -54,6 +56,7 @@ export async function createEvent({
 		end_time: endTime,
 		presale_start: presaleStartTime,
 		presale_end: presaleEndTime,
+		coupon_end: couponEnd,
 		admission_start: admissionStartTime,
 		tickets,
 	});
@@ -75,6 +78,7 @@ export async function updateEvent({
 	endDateTime,
 	presaleStart,
 	presaleEnd,
+	couponEnd,
 	tickets,
 	admissionStart,
 }: {
@@ -85,6 +89,7 @@ export async function updateEvent({
 	endDateTime: string;
 	presaleStart: string;
 	presaleEnd: string;
+	couponEnd: string;
 	tickets: number;
 	admissionStart: string;
 }) {
@@ -94,23 +99,23 @@ export async function updateEvent({
 	const startTime = new Date(startDateTime)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 	const endTime = new Date(endDateTime)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 	const presaleStartTime = new Date(presaleStart)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 	const presaleEndTime = new Date(presaleEnd)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 	const admissionStartTime = new Date(admissionStart)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+00:00");
+		.replace("Z", "+02:00");
 
 	const { error } = await supabase
 		.from("events")
@@ -121,6 +126,7 @@ export async function updateEvent({
 			end_time: endTime,
 			presale_start: presaleStartTime,
 			presale_end: presaleEndTime,
+			coupon_end: couponEnd,
 			admission_start: admissionStartTime,
 			tickets,
 		})

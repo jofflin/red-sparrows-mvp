@@ -179,6 +179,7 @@ export default function TicketSelection({
 				ticketSelection,
 				prices,
 				couponId: coupon?.coupon.id || null,
+				couponType: coupon?.coupon.type || null,
 			});
 
 			const stripe = await getStripe();

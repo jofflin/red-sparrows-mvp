@@ -10,6 +10,7 @@ type BlockTicket = Database["public"]["Tables"]["tickets"]["Row"];
 
 type CheckoutData = {
 	couponId: number | null;
+	couponType: string | null;
 	eventId: number;
 	prices: Database["public"]["Tables"]["ticket_categories"]["Row"][];
 	ticketSelection: {
@@ -38,6 +39,7 @@ export async function createCheckoutSession(
 		prices: data.prices,
 		ticketSelection: data.ticketSelection,
 		couponId: data.couponId,
+		couponType: data.couponType,
 	});
 
 	if (!isReserved) {
@@ -95,11 +97,13 @@ const reserveTickets = async ({
 	eventId,
 	prices,
 	couponId,
+	couponType,
 	ticketSelection,
 }: {
 	sessionId: string;
 	eventId: number;
 	couponId: number | null;
+	couponType: string | null;
 	prices: Database["public"]["Tables"]["ticket_categories"]["Row"][];
 	ticketSelection: { category: string; amount: number }[];
 }): Promise<boolean> => {
@@ -138,7 +142,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: couponId && price.id === 6 ? couponId : null,
+						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
 					});
 					tickets.push({
 						event_id: 4,
@@ -152,7 +156,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: couponId && price.id === 6 ? couponId : null,
+						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
 					});
 					tickets.push({
 						event_id: 5,
@@ -166,7 +170,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: couponId && price.id === 6 ? couponId : null,
+						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
 					});
 				}
 
@@ -185,7 +189,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: couponId && price.id === 6 ? couponId : null,
+						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
 					});
 				}
 			}

@@ -41,13 +41,22 @@ export default async function EventDetailPage({
 		statusText: categoryStatusText,
 	} = await supabase.from("ticket_categories").select("*");
 
+	const {
+		data: coupons,
+		error: couponError,
+		status: couponStatus,
+		statusText: couponStatusText,
+	} = await supabase.from("coupons").select("*").eq("eventId", params.eventId);
+
 	if (
 		eventError ||
 		eventStatus !== 200 ||
 		ticketError ||
 		ticketStatus !== 200 ||
 		categoryError ||
-		categoryStatus !== 200
+		categoryStatus !== 200 ||
+		couponError ||
+		couponStatus !== 200
 	) {
 		console.error(eventError);
 		redirect("/error");
@@ -86,7 +95,7 @@ export default async function EventDetailPage({
 			<UpdateEventForm event={event} />
 			{/* <SeasonTicketBlocker seats={seats} eventId={event.id} /> */}
 			<div className="my-4" />
-			<TicketTable tickets={tickets} categories={categories} />
+			<TicketTable tickets={tickets} categories={categories} coupons={coupons} />
 		</div>
 	);
 }

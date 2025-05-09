@@ -54,6 +54,25 @@ export default async function EventPage({
 		redirect("/error");
 	}
 
+
+	const {
+		data: coupons,
+		error: couponError,
+		status: couponStatus,
+	} = await supabase
+		.from("coupons")
+		.select(`
+			type,
+			amount
+		`)
+		.eq("eventId", event.id)
+		.eq("type", "2")
+
+	if (couponError || couponStatus !== 200) {
+		console.error(couponError);
+		redirect("/error");
+	}
+
 	const {
 		data: prices,
 		error: priceError,
@@ -202,6 +221,7 @@ export default async function EventPage({
 							</Card>
 						) : (
 							<TicketSelection
+								couponsData={coupons}
 								event={event}
 								ticketTypes={prices}
 								tickets={tickets}

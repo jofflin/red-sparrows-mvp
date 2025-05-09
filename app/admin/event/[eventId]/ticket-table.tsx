@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Table,
@@ -11,23 +10,24 @@ import {
 } from "@/components/ui/table";
 import type { Database } from "@/utils/supabase/database.types";
 import {
-	CalendarDays,
 	ChevronDown,
 	ChevronUp,
-	Download,
-	MapPin,
-	Users,
 } from "lucide-react";
 import { useState } from "react";
 
 type SortKey =
-	| "seat_id"
-	| "ticket_category_id"
-	| "ticket_scan_id"
+	| "ticket_category"
+	| "scan_id"
 	| "created_at";
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export default function TicketTable(props: any) {
+
+interface TicketTableProps {
+	tickets: Database["public"]["Tables"]["tickets"]["Row"][];
+	categories: Database["public"]["Tables"]["ticket_categories"]["Row"][];
+	coupons: Database["public"]["Tables"]["coupons"]["Row"][];
+}
+
+export default function TicketTable(props: TicketTableProps) {
 	const [sortKey, setSortKey] = useState<SortKey>("created_at");
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
@@ -76,15 +76,19 @@ export default function TicketTable(props: any) {
 						<TableRow>
 							<TableHead
 								className="cursor-pointer"
-								onClick={() => handleSort("ticket_category_id")}
+								onClick={() => handleSort("ticket_category")}
 							>
-								Kategorie <SortIcon columnKey="ticket_category_id" />
+								Kategorie <SortIcon columnKey="ticket_category" />
 							</TableHead>
 							<TableHead
 								className="cursor-pointer"
-								onClick={() => handleSort("ticket_scan_id")}
+								onClick={() => handleSort("scan_id")}
 							>
-								Scan ID <SortIcon columnKey="ticket_scan_id" />
+								Scan ID <SortIcon columnKey="scan_id" />
+							</TableHead>
+							<TableHead
+							>
+								Coupon
 							</TableHead>
 							<TableHead
 								className="cursor-pointer"
@@ -100,6 +104,7 @@ export default function TicketTable(props: any) {
 							<TableRow key={ticket.id}>
 								<TableCell>{mapCategory(ticket.ticket_category)}</TableCell>
 								<TableCell>{ticket.scan_id}</TableCell>
+								<TableCell>{props.coupons.find(coupon => coupon.id === ticket.couponId)?.code || "Kein Coupon"}</TableCell>
 								<TableCell>
 									{new Date(ticket.created_at).toLocaleString("de-DE", {
 										dateStyle: "medium",

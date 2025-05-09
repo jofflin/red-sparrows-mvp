@@ -31,23 +31,23 @@ export async function createEvent({
 	const startTime = new Date(startDateTime)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 	const endTime = new Date(endDateTime)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 	const presaleStartTime = new Date(presaleStart)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 	const presaleEndTime = new Date(presaleEnd)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 	const admissionStartTime = new Date(admissionStart)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 
 	const { error } = await supabase.from("events").insert({
 		name: eventName,
@@ -99,23 +99,23 @@ export async function updateEvent({
 	const startTime = new Date(startDateTime)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 	const endTime = new Date(endDateTime)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 	const presaleStartTime = new Date(presaleStart)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 	const presaleEndTime = new Date(presaleEnd)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 	const admissionStartTime = new Date(admissionStart)
 		.toISOString()
 		.replace("T", " ")
-		.replace("Z", "+02:00");
+		.replace("Z", "-02:00");
 
 	const { error } = await supabase
 		.from("events")

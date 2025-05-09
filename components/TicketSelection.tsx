@@ -28,6 +28,10 @@ export type TicketSelectionProps = {
 		couponId: number | null;
 		session_id: string;
 	}[];
+	couponsData: {
+		type: string;
+		amount: number;
+	}[];
 };
 
 type TicketSelection = {
@@ -39,6 +43,7 @@ export default function TicketSelection({
 	event,
 	ticketTypes,
 	tickets,
+	couponsData,
 }: TicketSelectionProps) {
 	const [ticketSelection, setTicketSelection] = useState<TicketSelection>(
 		ticketTypes.map((type) => ({ category: type.name, amount: 0 })),
@@ -66,8 +71,14 @@ export default function TicketSelection({
 
 	const getRemainingTickets = () => {
 		let remaining = Math.floor((event.tickets - currentTickets.length) * 0.9);
-		console.log("remaining", remaining, event.tickets, currentTickets.length);
+		remaining = remaining - couponsData.reduce((acc, coupon) => acc + coupon.amount, 0);
 		if (coupon && coupon.coupon.type === "1") {
+			remaining = event.tickets - currentTickets.length
+		}
+		if (coupon && coupon.coupon.type === "2") {
+			remaining = remaining + coupon.coupon.amount;
+		}
+		if (new Date() > new Date(event.coupon_end)) {
 			remaining = event.tickets - currentTickets.length
 		}
 		return remaining;
@@ -291,6 +302,7 @@ export default function TicketSelection({
 										id={type.name}
 										type="number"
 										min="0"
+										max={Math.min(getRemainingTickets(), 50)}
 										value={
 											ticketSelection.find((t) => t.category === type.name)
 												?.amount || 0

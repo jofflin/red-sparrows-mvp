@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 
 import { createClient } from '@/utils/supabase/server'
 
-export async function login({email, password}: {
+export async function login({ email, password }: {
   email: string
   password: string
 }
@@ -20,9 +20,6 @@ export async function login({email, password}: {
   }
 
   const { error } = await supabase.auth.signInWithPassword(data)
-
-  console.log('Login attempt:', { email, password })
-  console.log('Error:', error)
 
   if (error) {
     throw error

@@ -5,7 +5,6 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function updateTicketStatus(id: string) {
   const supabase = createClient();
-  console.log('updateTicketStatus', id);
   const { data, error } = await supabase
     .from("tickets")
     .update({ redeemed_at: new Date().toISOString().replace('T', ' ').replace('Z', '+00:00') })

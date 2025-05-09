@@ -70,8 +70,6 @@ const createLineItems = (data: {
 }): Stripe.Checkout.SessionCreateParams.LineItem[] => {
 	let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
-	console.log("data", data);
-
 	for (const ticket of data.ticketSelection) {
 		const price = data.prices.find((p) => p.name === ticket.category);
 		if (price) {

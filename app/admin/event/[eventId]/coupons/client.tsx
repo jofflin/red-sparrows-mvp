@@ -17,6 +17,7 @@ interface CouponPageProps {
         usages: number;
     }[]
     handleSubmit: (data: {
+        couponId?: number;
         amount: number;
         code: string;
         type: string;
@@ -36,10 +37,19 @@ export default function CouponPage({
         setSelectedCoupon(coupon);
     };
 
+    const handleSubmitCouponForm = async (data: {
+        couponId?: number;
+        amount: number;
+        code: string;
+        type: string;
+    }) => {
+        await handleSubmit(data);
+        setSelectedCoupon(null);
+    };
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <CouponForm onSubmit={handleSubmit} coupon={selectedCoupon} />
+            <CouponForm onSubmit={handleSubmitCouponForm} coupon={selectedCoupon} />
             <CouponList data={data} onEdit={handleEdit} onDelete={handleDelete} />
         </div>
     );

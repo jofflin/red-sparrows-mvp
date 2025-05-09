@@ -19,22 +19,29 @@ type Coupon = Database["public"]["Tables"]["coupons"]["Row"];
 interface CouponFormProps {
     coupon: Coupon | null;
     onSubmit: (data: {
+        couponId?: number;
         amount: number;
         code: string;
         type: string;
-    }) => Promise<void>;
-    submitLabel?: string;
+    }) => Promise<void>
 }
 
 export function CouponForm({
     coupon,
     onSubmit,
-    submitLabel = "Coupon erstellen",
 }: CouponFormProps) {
     const [amount, setAmount] = useState(coupon?.amount || 0);
     const [code, setCode] = useState(coupon?.code || "");
     const [type, setType] = useState(coupon?.type || "");
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        if (coupon) {
+            setAmount(coupon.amount);
+            setCode(coupon.code);
+            setType(coupon.type);
+        }
+    }, [coupon]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,10 +62,14 @@ export function CouponForm({
         }
 
         await onSubmit({
+            couponId: coupon?.id,
             amount,
             code,
             type,
         });
+        setAmount(0);
+        setCode("");
+        setType("");
     };
 
     return (
@@ -122,7 +133,7 @@ export function CouponForm({
                 </CardContent>
                 <CardFooter>
                     <Button type="submit" size="lg" className="w-full text-lg">
-                        {submitLabel}
+                        {coupon ? "Coupon speichern" : "Coupon erstellen"}
                     </Button>
                 </CardFooter>
             </form>

@@ -140,7 +140,7 @@ export type Database = {
           id: number
           redeemed_at: string | null
           reserved_until: string
-          scan_id: string | null
+          scan_id: string
           session_id: string
           ticket_category: number
         }
@@ -152,7 +152,7 @@ export type Database = {
           id?: number
           redeemed_at?: string | null
           reserved_until: string
-          scan_id?: string | null
+          scan_id: string
           session_id: string
           ticket_category: number
         }
@@ -164,7 +164,7 @@ export type Database = {
           id?: number
           redeemed_at?: string | null
           reserved_until?: string
-          scan_id?: string | null
+          scan_id?: string
           session_id?: string
           ticket_category?: number
         }

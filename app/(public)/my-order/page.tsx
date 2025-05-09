@@ -86,7 +86,6 @@ export default async function SuccessPage({
 
 	for (const event of events) {
 		const ticketsForEvent = tickets.filter((ticket) => ticket.event_id === event.id);
-		console.log(ticketsForEvent.length);
 		const ticketList: {
 			categoryName: string,
 			amount: number,

@@ -71,7 +71,6 @@ export async function deleteCategory(id: number) {
     console.error('Error deleting category:', error)
     redirect('/error')
   }
-  console.log('Category deleted:', id)
 
   revalidatePath('/admin/category', 'page')
   redirect('/admin/category')

@@ -110,6 +110,8 @@ export default async function SuccessPage({
 
 	ticketGroups = ticketGroups.sort((a, b) => {
 		return new Date(a.event.start_time).getTime() - new Date(b.event.start_time).getTime();
+	}).filter((group) => {
+		return group.tickets.length > 0;
 	});
 
 	return (

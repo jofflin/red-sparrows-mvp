@@ -1,13 +1,14 @@
 'use client'
 
-import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
-import { CalendarDays, Users, QrCode } from "lucide-react"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { CalendarDays, QrCode, Users } from "lucide-react"
+import moment from 'moment'
 import Link from "next/link"
-
+import { useState } from 'react'
+moment.locale("de");
 
 export type AdminEventSelectionComponentProps = {
   events: { id: number, name: string, start_time: string }[]
@@ -35,13 +36,7 @@ export function AdminEventSelectionComponent({ events }: AdminEventSelectionComp
                     <span className="font-semibold">{event.name}</span>
                     <span className="text-sm text-gray-500 flex items-center mt-1">
                       <CalendarDays className="w-4 h-4 mr-1" />
-                      {new Date(event.start_time).toLocaleDateString('de-DE', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })} Uhr
+                      {moment(event.start_time).format("DD.MM.YYYY HH:mm")} Uhr
                     </span>
                   </div>
                 </Label>

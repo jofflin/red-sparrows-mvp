@@ -13,7 +13,9 @@ import {
 	ChevronDown,
 	ChevronUp,
 } from "lucide-react";
+import moment from "moment";
 import { useState } from "react";
+moment.locale("de");
 
 type SortKey =
 	| "ticket_category"
@@ -106,11 +108,7 @@ export default function TicketTable(props: TicketTableProps) {
 								<TableCell>{ticket.scan_id}</TableCell>
 								<TableCell>{props.coupons.find(coupon => coupon.id === ticket.couponId)?.code || "Kein Coupon"}</TableCell>
 								<TableCell>
-									{new Date(ticket.created_at).toLocaleString("de-DE", {
-										dateStyle: "medium",
-										timeStyle: "short",
-										timeZone: "Europe/Berlin",
-									})}
+									{moment(ticket.created_at).format("DD.MM.YYYY HH:mm")}
 								</TableCell>
 								<TableCell>
 									{ticket.bought_at ? "Gekauft" : "Abgebrochen"}

@@ -5,6 +5,7 @@ import getStripe from "@/utils/get-stripejs";
 import { createClient } from "@/utils/supabase/client";
 import type { Database } from "@/utils/supabase/database.types";
 import { ShoppingCart, TicketPercent } from "lucide-react";
+import moment from 'moment'
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
@@ -17,6 +18,7 @@ import {
 } from "./ui/card";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
+moment.locale("de");
 
 export type TicketSelectionProps = {
 	event: Database["public"]["Tables"]["events"]["Row"];
@@ -78,7 +80,7 @@ export default function TicketSelection({
 		if (coupon && coupon.coupon.type === "2") {
 			remaining = remaining + coupon.coupon.amount;
 		}
-		if (new Date() > new Date(event.coupon_end)) {
+		if (moment() > moment(event.coupon_end)) {
 			remaining = event.tickets - currentTickets.length
 		}
 		return remaining;

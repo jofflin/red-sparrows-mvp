@@ -1,9 +1,10 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import moment from "moment";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
+moment.locale("de");
 export async function createEvent({
 	eventName,
 	eventDescription,
@@ -28,26 +29,11 @@ export async function createEvent({
 	const supabase = createClient();
 
 	// Convert to UTC timestamps
-	const startTime = new Date(startDateTime)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
-	const endTime = new Date(endDateTime)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
-	const presaleStartTime = new Date(presaleStart)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
-	const presaleEndTime = new Date(presaleEnd)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
-	const admissionStartTime = new Date(admissionStart)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
+	const startTime = moment(startDateTime).toISOString();
+	const endTime = moment(endDateTime).toISOString();
+	const presaleStartTime = moment(presaleStart).toISOString();
+	const presaleEndTime = moment(presaleEnd).toISOString();
+	const admissionStartTime = moment(admissionStart).toISOString();
 
 	const { error } = await supabase.from("events").insert({
 		name: eventName,
@@ -96,26 +82,12 @@ export async function updateEvent({
 	const supabase = createClient();
 
 	// Convert to UTC timestamps
-	const startTime = new Date(startDateTime)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
-	const endTime = new Date(endDateTime)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
-	const presaleStartTime = new Date(presaleStart)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
-	const presaleEndTime = new Date(presaleEnd)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
-	const admissionStartTime = new Date(admissionStart)
-		.toISOString()
-		.replace("T", " ")
-		.replace("Z", "-02:00");
+	const startTime = moment(startDateTime).toISOString();
+	const endTime = moment(endDateTime).toISOString();
+	const presaleStartTime = moment(presaleStart).toISOString();
+	const presaleEndTime = moment(presaleEnd).toISOString();
+	const admissionStartTime = moment(admissionStart).toISOString();
+
 
 	const { error } = await supabase
 		.from("events")

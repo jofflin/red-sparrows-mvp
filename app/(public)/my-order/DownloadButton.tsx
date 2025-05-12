@@ -6,7 +6,9 @@ import type { Database } from "@/utils/supabase/database.types";
 import { generate } from "@pdfme/generator";
 import { barcodes, image, text } from "@pdfme/schemas";
 import { Download } from "lucide-react";
+import moment from "moment";
 import { PDFDocument } from "pdf-lib";
+moment.locale("de");
 
 type DownloadButtonProps = {
     tickets: Database["public"]["Tables"]["tickets"]["Row"][];
@@ -32,13 +34,9 @@ export default function DownloadButton({ tickets, events, categories }: Download
             }
             const inputs = [
                 {
-                    title: `Tickets für das Spiel am ${new Date(
+                    title: `Tickets für das Spiel am ${moment(
                         event.start_time,
-                    ).toLocaleString("de-DE", {
-                        dateStyle: "full",
-                        timeStyle: "short",
-                        timeZone: "Europe/Berlin",
-                    })} Uhr`,
+                    ).format("DD.MM.YYYY HH:mm")} Uhr`,
                     event: `${event.name} (${VENUE})`,
                     location: `Ticketkategorie: ${categoryMapper(tickets[i].ticket_category)}`,
                     info: "Bitte zeigen Sie diesen QR-Code beim Einlass vor.\nErmäßigungen sind nur mit gültigem Ausweis gültig\n\nAGB: https://red-sparrows.getnono.de/agb\nDatenschutz: https://red-sparrows.getnono.de/impressum\nImpressum: https://red-sparrows.getnono.de/impressum",

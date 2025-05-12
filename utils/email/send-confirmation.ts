@@ -5,8 +5,10 @@ import type { Database } from "@/utils/supabase/database.types";
 import type { Template } from "@pdfme/common";
 import { generate } from "@pdfme/generator";
 import { barcodes, image, text } from "@pdfme/schemas";
+import moment from 'moment';
 import { PDFDocument } from "pdf-lib";
 import { Resend } from "resend";
+moment.locale('de');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const logo =
@@ -179,13 +181,9 @@ export const sendConfirmation = async ({
 		}
 		const inputs = [
 			{
-				title: `Tickets für das Spiel am ${new Date(
+				title: `Tickets für das Spiel am ${moment(
 					event.start_time,
-				).toLocaleString("de-DE", {
-					dateStyle: "full",
-					timeStyle: "short",
-					timeZone: "Europe/Berlin",
-				})} Uhr`,
+				).format("DD.MM.YYYY HH:mm")} Uhr`,
 				event: `${event.name} (${VENUE})`,
 				location: `Ticketkategorie: ${categoryMapper(tickets[i].ticket_category)}`,
 				info: "Bitte zeigen Sie diesen QR-Code beim Einlass vor.\nErmäßigungen sind nur mit gültigem Ausweis gültig\n\nAGB: https://red-sparrows.getnono.de/agb\nDatenschutz: https://red-sparrows.getnono.de/impressum\nImpressum: https://red-sparrows.getnono.de/impressum",

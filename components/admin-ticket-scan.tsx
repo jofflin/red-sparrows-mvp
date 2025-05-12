@@ -28,8 +28,10 @@ import type { Database } from "@/utils/supabase/database.types";
 import { QuestionMarkIcon } from "@radix-ui/react-icons";
 import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 import { Check, ChevronDown, ChevronUp, QrCode, X } from "lucide-react";
+import moment from 'moment'
 import { useState } from "react";
 import { toast } from "sonner";
+moment.locale("de");
 
 export type AdminTicketScanComponentProps = {
 	initialTickets: Database["public"]["Tables"]["tickets"]["Row"][];
@@ -144,7 +146,7 @@ export function AdminTicketScanComponent({
 						Ticket Scannen (Noch {tickets.filter((t) => !t.redeemed_at).length}{" "}
 						Tickets)
 					</CardTitle>
-					<CardDescription className="text-sm">{`${event.name} - ${new Date(event.start_time).toLocaleTimeString("de-DE", { timeZone: "Europe/Berlin" })} Uhr`}</CardDescription>
+					<CardDescription className="text-sm">{`${event.name} - ${moment(event.start_time).format("HH:mm")} Uhr`}</CardDescription>
 				</CardHeader>
 				<CardContent className="p-0">
 					<div className="space-y-3">

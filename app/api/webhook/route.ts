@@ -2,10 +2,12 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import { sendConfirmation } from "@/utils/email/send-confirmation";
 import { createClient } from "@/utils/supabase/server";
+import moment from "moment";
 import { headers } from "next/headers";
 import { Resend } from "resend";
 import type Stripe from "stripe";
 import stripe from "../../../utils/stripe";
+moment.locale("de");
 
 const secret = process.env.STRIPE_WEBHOOK_SECRET as string;
 
@@ -78,7 +80,7 @@ const fulfillOrder = async (session: Stripe.Checkout.Session) => {
 	await supabase
 		.from("purchaseSession")
 		.update({
-			paid_at: new Date().toISOString(),
+			paid_at: moment().toISOString(),
 			email: session.customer_details?.email,
 		})
 		.eq("stripe_session_id", session.id);
@@ -130,10 +132,7 @@ const createOrder = async (session: Stripe.Checkout.Session) => {
 	const tickets = await supabase
 		.from("tickets")
 		.update({
-			bought_at: new Date()
-				.toISOString()
-				.replace("T", " ")
-				.replace("Z", "+00:00"),
+			bought_at: moment().toISOString(),
 		})
 		.eq("session_id", session.id);
 	console.log("tickets", tickets);

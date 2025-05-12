@@ -3,9 +3,11 @@
 import stripe from "@/utils/stripe";
 import type { Database } from "@/utils/supabase/database.types";
 import { createClient } from "@/utils/supabase/server";
+import moment from "moment";
 import { headers } from "next/headers";
 import type Stripe from "stripe";
 
+moment.locale("de");
 type BlockTicket = Database["public"]["Tables"]["tickets"]["Row"];
 
 type CheckoutData = {
@@ -108,7 +110,7 @@ const reserveTickets = async ({
 	ticketSelection: { category: string; amount: number }[];
 }): Promise<boolean> => {
 	const supabase = createClient();
-	const now = new Date().toISOString().replace("T", " ").replace("Z", "+00:00");
+	const now = moment().toISOString();
 
 	// Create purchase session
 	const { error: sessionError } = await supabase
@@ -135,10 +137,7 @@ const reserveTickets = async ({
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
-						reserved_until: new Date(Date.now() + 15 * 60 * 1000)
-							.toISOString()
-							.replace("T", " ")
-							.replace("Z", "+00:00"),
+						reserved_until: moment().add(15, "minutes").toISOString(),
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
@@ -149,10 +148,7 @@ const reserveTickets = async ({
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
-						reserved_until: new Date(Date.now() + 15 * 60 * 1000)
-							.toISOString()
-							.replace("T", " ")
-							.replace("Z", "+00:00"),
+						reserved_until: moment().add(15, "minutes").toISOString(),
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
@@ -163,10 +159,7 @@ const reserveTickets = async ({
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
-						reserved_until: new Date(Date.now() + 15 * 60 * 1000)
-							.toISOString()
-							.replace("T", " ")
-							.replace("Z", "+00:00"),
+						reserved_until: moment().add(15, "minutes").toISOString(),
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
@@ -182,10 +175,7 @@ const reserveTickets = async ({
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
-						reserved_until: new Date(Date.now() + 15 * 60 * 1000)
-							.toISOString()
-							.replace("T", " ")
-							.replace("Z", "+00:00"),
+						reserved_until: moment().add(15, "minutes").toISOString(),
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,

@@ -9,8 +9,10 @@ import {
 import { VENUE } from "@/lib/globals";
 import { createClient } from "@/utils/supabase/server";
 import { CalendarDays, Clock, DoorOpen, Info, MapPin } from "lucide-react";
+import moment from "moment";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+moment.locale("de");
 
 export default async function EventPage({
 	params,
@@ -103,11 +105,7 @@ export default async function EventPage({
 							<div className="flex items-center text-sm text-gray-500">
 								<CalendarDays className="mr-2 h-4 w-4 text-secondary-500" />
 								<span>
-									{new Date(event.start_time).toLocaleString("de-DE", {
-										dateStyle: "full",
-										timeStyle: "short",
-										timeZone: "Europe/Berlin",
-									})}{" "}
+									Anpfiff: {moment(event.start_time).format("DD.MM.YYYY HH:mm")}{" "}
 									Uhr
 								</span>
 							</div>
@@ -115,21 +113,9 @@ export default async function EventPage({
 								<Clock className="mr-2 h-4 w-4 text-secondary-500" />
 								<span>
 									Vorverkauf:{" "}
-									{new Date(event.presale_start).toLocaleString("de-DE", {
-										dateStyle: "medium",
-										timeStyle: "short",
-										timeZone: "Europe/Berlin",
-									})}{" "}
+									{moment(event.presale_start).format("DD.MM.YYYY HH:mm")}{" "}
 									bis{" "}
-									{new Date(
-										new Date(event.start_time).setHours(
-											new Date(event.start_time).getHours() - 5,
-										),
-									).toLocaleString("de-DE", {
-										dateStyle: "medium",
-										timeStyle: "short",
-										timeZone: "Europe/Berlin",
-									})}{" "}
+									{moment(event.presale_end).format("DD.MM.YYYY HH:mm")}{" "}
 									Uhr
 								</span>
 							</div>
@@ -137,11 +123,7 @@ export default async function EventPage({
 								<DoorOpen className="mr-2 h-4 w-4 text-secondary-500" />
 								<span>
 									Einlass ab:{" "}
-									{new Date(event.admission_start).toLocaleString("de-DE", {
-										dateStyle: "medium",
-										timeStyle: "short",
-										timeZone: "Europe/Berlin",
-									})}{" "}
+									{moment(event.admission_start).format("DD.MM.YYYY HH:mm")}{" "}
 									Uhr
 								</span>
 							</div>
@@ -149,7 +131,7 @@ export default async function EventPage({
 					</Card>
 					<Image
 						// src={`/images/${event.id}.jpg`}
-						src={"/images/team.jpg"}
+						src={`/images/${event.id}.jpg`}
 						alt={event.name}
 						width={1000}
 						height={1000}
@@ -193,7 +175,7 @@ export default async function EventPage({
 				{/* Ticket Selection */}
 				<div className="lg:col-span-1">
 					<div className="sticky top-20">
-						{new Date(event.start_time) < new Date() ? (
+						{moment(event.start_time).isBefore(moment()) ? (
 							<Card>
 								<CardHeader>
 									<CardTitle>Der Vorverkauf hat geendet</CardTitle>
@@ -203,18 +185,14 @@ export default async function EventPage({
 									</CardDescription>
 								</CardHeader>
 							</Card>
-						) : new Date(event.presale_start) > new Date() ? (
+						) : moment(event.presale_start).isAfter(moment()) ? (
 							<Card>
 								<CardHeader>
 									<CardTitle>Der Vorverkauf hat noch nicht begonnen</CardTitle>
 									<CardDescription>
 										Der Vorverkauf für dieses Event hat noch nicht begonnen.
 										Bitte warten Sie bis zum{" "}
-										{new Date(event.presale_start).toLocaleString("de-DE", {
-											dateStyle: "full",
-											timeStyle: "short",
-											timeZone: "Europe/Berlin",
-										})}
+										{moment(event.presale_start).format("DD.MM.YYYY HH:mm")}
 										Uhr.
 									</CardDescription>
 								</CardHeader>

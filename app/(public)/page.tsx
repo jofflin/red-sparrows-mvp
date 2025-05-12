@@ -15,8 +15,10 @@ import {
 	MapPin,
 	Ticket,
 } from "lucide-react";
+import moment from "moment";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+moment.locale("de");
 
 export default async function Home() {
 	const supabase = createClient();
@@ -25,7 +27,7 @@ export default async function Home() {
 		.from("events")
 		.select("*")
 		// event presale end date is in the future
-		.gt("end_time", new Date().toISOString())
+		.gt("end_time", moment().toISOString())
 		.order("start_time", { ascending: true });
 	if (error || status !== 200) {
 		console.error(error);
@@ -71,21 +73,13 @@ export default async function Home() {
 								<div className="space-y-4">
 									<div className="flex items-center text-sm text-gray-500">
 										<CalendarDays className="mr-2 h-4 w-4 text-secondary-500" />
-										{new Date(event.start_time).toLocaleString("de-DE", {
-											dateStyle: "full",
-											timeStyle: "short",
-											timeZone: "Europe/Berlin",
-										})}{" "}
+										{moment(event.start_time).format("DD.MM.YYYY HH:mm")}{" "}
 										Uhr
 									</div>
 									<div className="flex items-center text-sm text-gray-500">
 										<Ticket className="mr-2 h-4 w-4 text-secondary-500" />
 										VVK bis:{" "}
-										{new Date(event.presale_end).toLocaleString("de-DE", {
-											dateStyle: "medium",
-											timeStyle: "short",
-											timeZone: "Europe/Berlin",
-										})}{" "}
+										{moment(event.presale_end).format("DD.MM.YYYY HH:mm")}{" "}
 										Uhr
 									</div>
 									<div className="flex items-center text-sm text-gray-500">
@@ -109,20 +103,13 @@ export default async function Home() {
 								</div>
 							</CardContent>
 							<CardFooter>
-								{new Date(event.presale_start) > new Date() ? (
+								{moment(event.presale_start).isAfter(moment()) ? (
 									<div className="w-full text-center text-sm text-gray-500 bg-gray-50 p-4 rounded-lg">
 										Vorverkauf startet am{" "}
-										{new Date(event.presale_start).toLocaleDateString("de-DE", {
-											year: "numeric",
-											month: "long",
-											day: "numeric",
-											hour: "2-digit",
-											minute: "2-digit",
-											timeZone: "Europe/Berlin",
-										})}{" "}
+										{moment(event.presale_start).format("DD.MM.YYYY HH:mm")}{" "}
 										Uhr
 									</div>
-								) : new Date(event.presale_end) > new Date() ? (
+								) : moment(event.presale_end).isAfter(moment()) ? (
 									<Button asChild className="w-full">
 										<Link
 											href={`/event/${event.id}`}
@@ -135,14 +122,7 @@ export default async function Home() {
 								) : (
 									<div className="w-full text-center text-sm text-gray-500 bg-gray-50 p-4 rounded-lg">
 										Verkauf beendet am{" "}
-										{new Date(event.presale_end).toLocaleDateString("de-DE", {
-											year: "numeric",
-											month: "long",
-											day: "numeric",
-											hour: "2-digit",
-											minute: "2-digit",
-											timeZone: "Europe/Berlin",
-										})}{" "}
+										{moment(event.presale_end).format("DD.MM.YYYY HH:mm")}{" "}
 										Uhr
 									</div>
 								)}

@@ -4,13 +4,12 @@ import { VENUE } from "@/lib/globals";
 import type { Database } from "@/utils/supabase/database.types";
 import { createClient } from "@/utils/supabase/server";
 import { CalendarDays, MapPin, Users } from "lucide-react";
+import moment from "moment";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { useState } from "react";
 import { createCoupon, deleteCoupon, updateCoupon } from "./actions";
 import CouponPage from "./client";
-import { CouponForm } from "./coupon-form";
-import CouponList from "./coupon-list";
+moment.locale("de");
 
 type Coupon = Database["public"]["Tables"]["coupons"]["Row"];
 
@@ -46,7 +45,7 @@ export default async function EventDetailPage({
         error: couponError,
         status: couponStatus,
         statusText: couponStatusText,
-    } = await supabase.from("coupons").select("*");
+    } = await supabase.from("coupons").select("*").eq("eventId", params.eventId);
 
     if (
         eventError ||
@@ -97,11 +96,7 @@ export default async function EventDetailPage({
                     <div className="flex items-center">
                         <CalendarDays className="mr-2 h-5 w-5 text-gray-500" />
                         <span>
-                            {new Date(event.start_time).toLocaleString("de-DE", {
-                                dateStyle: "full",
-                                timeStyle: "short",
-                                timeZone: "Europe/Berlin",
-                            })}
+                            {moment(event.start_time).format("DD.MM.YYYY HH:mm")}
                         </span>
                     </div>
                     <div className="flex items-center">

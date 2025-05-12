@@ -11,7 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { Database } from "@/utils/supabase/database.types";
+import moment from "moment";
 import { useEffect, useState } from "react";
+
+moment.locale("de");
 
 type Event = Database["public"]["Tables"]["events"]["Row"];
 
@@ -42,34 +45,36 @@ export function EventForm({
 	);
 	const [startDateTime, setStartDateTime] = useState(
 		event?.start_time
-			? new Date(event.start_time).toISOString().slice(0, 16)
-			: new Date().toISOString().slice(0, 16),
+			? moment(event.start_time).format("YYYY-MM-DDTHH:mm")
+			: moment().format("YYYY-MM-DDTHH:mm"),
 	);
+	console.log(startDateTime);
+	console.log(event?.start_time);
 	const [endDateTime, setEndDateTime] = useState(
 		event?.end_time
-			? new Date(event.end_time).toISOString().slice(0, 16)
-			: new Date().toISOString().slice(0, 16),
+			? moment(event.end_time).format("YYYY-MM-DDTHH:mm")
+			: moment().format("YYYY-MM-DDTHH:mm"),
 	);
 
 	const [presaleStart, setPresaleStart] = useState(
 		event?.presale_start
-			? new Date(event.presale_start).toISOString().slice(0, 16)
-			: new Date().toISOString().slice(0, 16),
+			? moment(event.presale_start).format("YYYY-MM-DDTHH:mm")
+			: moment().format("YYYY-MM-DDTHH:mm"),
 	);
 	const [presaleEnd, setPresaleEnd] = useState(
 		event?.presale_end
-			? new Date(event.presale_end).toISOString().slice(0, 16)
-			: new Date().toISOString().slice(0, 16),
+			? moment(event.presale_end).format("YYYY-MM-DDTHH:mm")
+			: moment().format("YYYY-MM-DDTHH:mm"),
 	);
 	const [admissionStart, setAdmissionStart] = useState(
 		event?.admission_start
-			? new Date(event.admission_start).toISOString().slice(0, 16)
-			: new Date().toISOString().slice(0, 16),
+			? moment(event.admission_start).format("YYYY-MM-DDTHH:mm")
+			: moment().format("YYYY-MM-DDTHH:mm"),
 	);
 	const [couponEnd, setCouponEnd] = useState(
 		event?.coupon_end
-			? new Date(event.coupon_end).toISOString().slice(0, 16)
-			: new Date().toISOString().slice(0, 16),
+			? moment(event.coupon_end).format("YYYY-MM-DDTHH:mm")
+			: moment().format("YYYY-MM-DDTHH:mm"),
 	);
 	const [tickets, setTickets] = useState(event?.tickets || 100);
 	const [error, setError] = useState("");
@@ -77,9 +82,9 @@ export function EventForm({
 	// Update end time whenever start time changes
 	useEffect(() => {
 		if (startDateTime) {
-			const start = new Date(startDateTime);
-			const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
-			setEndDateTime(end.toISOString().slice(0, 16));
+			const start = moment(startDateTime);
+			const end = start.add(2, "hours");
+			setEndDateTime(end.format("YYYY-MM-DDTHH:mm"));
 		}
 	}, [startDateTime]);
 
@@ -107,11 +112,11 @@ export function EventForm({
 			return;
 		}
 
-		const start = new Date(startDateTime);
-		const presaleStartDate = new Date(presaleStart);
-		const presaleEndDate = new Date(presaleEnd);
-		const admissionStartDate = new Date(admissionStart);
-		const couponEndDate = new Date(couponEnd);
+		const start = moment(startDateTime);
+		const presaleStartDate = moment(presaleStart);
+		const presaleEndDate = moment(presaleEnd);
+		const admissionStartDate = moment(admissionStart);
+		const couponEndDate = moment(couponEnd);
 		if (presaleStartDate >= presaleEndDate) {
 			setError("VVK-Start muss vor VVK-Ende liegen");
 			return;

@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { VENUE } from "@/lib/globals";
 import { createClient } from "@/utils/supabase/server";
-import { CalendarDays, Download, MapPin, Users } from "lucide-react";
+import { CalendarDays, MapPin, Users } from "lucide-react";
+import moment from "moment";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { UpdateEventForm } from "./components/UpdateEventForm";
 import TicketTable from "./ticket-table";
+moment.locale("de");
 
 export default async function EventDetailPage({
 	params,
@@ -75,11 +77,7 @@ export default async function EventDetailPage({
 					<div className="flex items-center">
 						<CalendarDays className="mr-2 h-5 w-5 text-gray-500" />
 						<span>
-							{new Date(event.start_time).toLocaleString("de-DE", {
-								dateStyle: "full",
-								timeStyle: "short",
-								timeZone: "Europe/Berlin",
-							})}
+							{moment(event.start_time).format("DD.MM.YYYY HH:mm")}
 						</span>
 					</div>
 					<div className="flex items-center">

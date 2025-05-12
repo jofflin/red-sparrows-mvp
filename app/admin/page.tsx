@@ -17,14 +17,16 @@ import {
 	Ticket,
 	Users,
 } from "lucide-react";
+import moment from "moment";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+moment.locale("de");
 
 export const fetchCache = "force-no-store";
 
 export default async function EventOverviewPage() {
 	const supabase = createClient();
-	const now = new Date();
+	const now = moment();
 
 	const { data, error, status } = await supabase
 		.from("events")
@@ -44,13 +46,13 @@ export default async function EventOverviewPage() {
 	}
 
 	const events = data as Database["public"]["Tables"]["events"]["Row"][];
-	const pastEvents = events.filter((event) => new Date(event.end_time) < now);
+	const pastEvents = events.filter((event) => moment(event.end_time).isBefore(now));
 	const upcomingEvents = events.filter(
 		(event) =>
-			new Date(event.start_time) > now && new Date(event.presale_start) < now,
+			moment(event.start_time).isAfter(now) && moment(event.presale_start).isBefore(now),
 	);
 	const futureEvents = events.filter(
-		(event) => new Date(event.presale_start) > now,
+		(event) => moment(event.presale_start).isAfter(now),
 	);
 
 	const calculateTicketSold = (
@@ -81,12 +83,7 @@ export default async function EventOverviewPage() {
 					<div className="space-y-4">
 						<div className="flex items-center text-sm text-gray-500">
 							<CalendarDays className="mr-2 h-4 w-4" />
-							{new Date(event.start_time).toLocaleDateString("de-DE", {
-								year: "numeric",
-								month: "long",
-								day: "numeric",
-								timeZone: "Europe/Berlin",
-							})}
+							{moment(event.start_time).format("DD.MM.YYYY")}
 						</div>
 						<div className="flex items-center text-sm text-gray-500">
 							<Users className="mr-2 h-4 w-4" />

@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button";
 import { VENUE } from "@/lib/globals";
 import { createClient } from "@/utils/supabase/server";
 import { CalendarDays, MapPin, Users } from "lucide-react";
+import moment from "moment";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import DownloadButton from "./download";
+moment.locale("de");
 
 export default async function EventExportPage({
 	params,
@@ -80,12 +82,7 @@ export default async function EventExportPage({
 			).length,
 			sessionTickets.filter((ticket) => ticket.ticket_category === 2).length,
 			sessionTickets.filter((ticket) => ticket.ticket_category === 3).length,
-			session.paid_at &&
-			new Date(session.paid_at).toLocaleString("de-DE", {
-				dateStyle: "full",
-				timeStyle: "short",
-				timeZone: "Europe/Berlin",
-			}),
+			session.paid_at && moment(session.paid_at).format("DD.MM.YYYY HH:mm"),
 		];
 		csv.push(row);
 	}
@@ -108,11 +105,7 @@ export default async function EventExportPage({
 					<div className="flex items-center">
 						<CalendarDays className="mr-2 h-5 w-5 text-gray-500" />
 						<span>
-							{new Date(event.start_time).toLocaleString("de-DE", {
-								dateStyle: "full",
-								timeStyle: "short",
-								timeZone: "Europe/Berlin",
-							})}
+							{moment(event.start_time).format("DD.MM.YYYY HH:mm")}
 						</span>
 					</div>
 					<div className="flex items-center">

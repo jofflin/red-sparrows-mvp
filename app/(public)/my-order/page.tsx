@@ -10,9 +10,11 @@ import {
 import { HOMEPAGE_URL, VENUE } from "@/lib/globals";
 import type { Database } from "@/utils/supabase/database.types";
 import { createClient } from "@/utils/supabase/server";
-import { Calendar, CheckCircle, Download, Home, MapPin, Ticket } from "lucide-react";
+import { Calendar, CheckCircle, Home, MapPin, Ticket } from "lucide-react";
+import moment from "moment";
 import Link from "next/link";
 import DownloadButton from "./DownloadButton";
+moment.locale("de");
 
 export default async function SuccessPage({
 	searchParams,
@@ -109,7 +111,7 @@ export default async function SuccessPage({
 	}
 
 	ticketGroups = ticketGroups.sort((a, b) => {
-		return new Date(a.event.start_time).getTime() - new Date(b.event.start_time).getTime();
+		return moment(a.event.start_time).diff(moment(b.event.start_time));
 	}).filter((group) => {
 		return group.tickets.length > 0;
 	});
@@ -163,11 +165,7 @@ export default async function SuccessPage({
 							<div className="flex items-center space-x-2 text-gray-600">
 								<Calendar className="h-5 w-5 text-secondary-500" />
 								<span>
-									{new Date(group.event.start_time).toLocaleString("de-De", {
-										dateStyle: "full",
-										timeStyle: "short",
-										timeZone: "Europe/Berlin",
-									})} Uhr
+									{moment(group.event.start_time).format("DD.MM.YYYY HH:mm")} Uhr
 								</span>
 							</div>
 							<div className="flex items-center space-x-2 text-gray-600">

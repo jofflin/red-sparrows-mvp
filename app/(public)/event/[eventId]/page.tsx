@@ -1,4 +1,5 @@
 import TicketSelection from "@/components/TicketSelection";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -8,9 +9,10 @@ import {
 } from "@/components/ui/card";
 import { VENUE } from "@/lib/globals";
 import { createClient } from "@/utils/supabase/server";
-import { CalendarDays, Clock, DoorOpen, Info, MapPin } from "lucide-react";
+import { CalendarDays, Clock, DoorOpen, Info, Mail, MapPin } from "lucide-react";
 import moment from "moment-timezone";
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 moment.locale("de");
 
@@ -92,6 +94,23 @@ export default async function EventPage({
 				<div className="lg:col-span-2 space-y-8">
 					{/* Event Image */}
 					{/* Event Details */}
+					<Card className="bg-secondary-50">
+						<CardHeader>
+							<CardTitle>Info:</CardTitle>
+						</CardHeader>
+						<CardContent className="space-y-4">
+							<p className="text-gray-600">
+								Es gab Probleme bei dem Download der Tickets und dem E-Mail Versand. Dies betrifft Tickets, die vor dem 12.05 um 22 Uhr gekauft wurden. Sollten Sie im Laufe der nächsten 24h keine Tickets per E-Mail erhalten, wenden Sie sich bitte an uns.<br />
+								Bei Neubestellungen treten keine Probleme auf.
+							</p>
+							<Button asChild>
+								<Link href="mailto:info@getnono.app">
+									<Mail className="mr-2 h-4 w-4" />
+									info@getnono.app
+								</Link>
+							</Button>
+						</CardContent>
+					</Card>
 					<Card>
 						<CardHeader>
 							<CardTitle>Event Details</CardTitle>

@@ -12,6 +12,7 @@ import {
 	ArrowRight,
 	Calendar,
 	CalendarDays,
+	Mail,
 	MapPin,
 	Ticket,
 } from "lucide-react";
@@ -46,6 +47,23 @@ export default async function Home() {
 
 	return (
 		<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-24">
+			<Card className="bg-secondary-50 mb-8">
+				<CardHeader>
+					<CardTitle>Info:</CardTitle>
+				</CardHeader>
+				<CardContent className="space-y-4">
+					<p className="text-gray-600">
+						Es gab Probleme bei dem Download der Tickets und dem E-Mail Versand. Dies betrifft Tickets, die vor dem 12.05 um 22 Uhr gekauft wurden. Sollten Sie im Laufe der nächsten 24h keine Tickets per E-Mail erhalten, wenden Sie sich bitte an uns.<br />
+						Bei Neubestellungen treten keine Probleme auf.
+					</p>
+					<Button asChild>
+						<Link href="mailto:info@getnono.app">
+							<Mail className="mr-2 h-4 w-4" />
+							info@getnono.app
+						</Link>
+					</Button>
+				</CardContent>
+			</Card>
 			{data.length === 0 ? (
 				<div className="flex flex-col items-center justify-center py-12 text-center">
 					<Calendar className="h-16 w-16 text-secondary-500 mb-4" />

@@ -28,6 +28,7 @@ export async function createEvent({
 }) {
 	const supabase = createClient();
 
+	console.log(startDateTime, endDateTime, presaleStart, presaleEnd, couponEnd, admissionStart);
 	// Convert to UTC timestamps
 	const startTime = moment(startDateTime).toISOString();
 	const endTime = moment(endDateTime).toISOString();
@@ -82,11 +83,11 @@ export async function updateEvent({
 	const supabase = createClient();
 
 	// Convert to UTC timestamps
-	const startTime = moment(startDateTime).toISOString();
-	const endTime = moment(endDateTime).toISOString();
-	const presaleStartTime = moment(presaleStart).toISOString();
-	const presaleEndTime = moment(presaleEnd).toISOString();
-	const admissionStartTime = moment(admissionStart).toISOString();
+	const startTime = moment(startDateTime).utc().toISOString();
+	const endTime = moment(endDateTime).utc().toISOString();
+	const presaleStartTime = moment(presaleStart).utc().toISOString();
+	const presaleEndTime = moment(presaleEnd).utc().toISOString();
+	const admissionStartTime = moment(admissionStart).utc().toISOString();
 
 
 	const { error } = await supabase

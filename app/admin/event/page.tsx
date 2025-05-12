@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Info, LucideMonitorCheck, Plus } from "lucide-react";
+import moment from "moment";
 import Link from "next/link";
 import { createEvent } from "./actions";
 import { EventForm } from "./components/EventForm";
+moment.locale("de");
 
 export default function EventCreationPage() {
 	const handleSubmit = async (data: {
@@ -19,7 +21,15 @@ export default function EventCreationPage() {
 		tickets: number;
 		admissionStart: string;
 	}) => {
-		await createEvent(data);
+		await createEvent({
+			...data,
+			startDateTime: moment(data.startDateTime).utc().toISOString(),
+			endDateTime: moment(data.endDateTime).utc().toISOString(),
+			presaleStart: moment(data.presaleStart).utc().toISOString(),
+			presaleEnd: moment(data.presaleEnd).utc().toISOString(),
+			couponEnd: moment(data.couponEnd).utc().toISOString(),
+			admissionStart: moment(data.admissionStart).utc().toISOString(),
+		});
 	};
 
 	return (

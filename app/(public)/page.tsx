@@ -15,7 +15,7 @@ import {
 	MapPin,
 	Ticket,
 } from "lucide-react";
-import moment from "moment";
+import moment from "moment-timezone";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 moment.locale("de");
@@ -73,13 +73,13 @@ export default async function Home() {
 								<div className="space-y-4">
 									<div className="flex items-center text-sm text-gray-500">
 										<CalendarDays className="mr-2 h-4 w-4 text-secondary-500" />
-										{moment(event.start_time).format("DD.MM.YYYY HH:mm")}{" "}
+										{moment.tz(event.start_time, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}{" "}
 										Uhr
 									</div>
 									<div className="flex items-center text-sm text-gray-500">
 										<Ticket className="mr-2 h-4 w-4 text-secondary-500" />
 										VVK bis:{" "}
-										{moment(event.presale_end).format("DD.MM.YYYY HH:mm")}{" "}
+										{moment.tz(event.presale_end, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}{" "}
 										Uhr
 									</div>
 									<div className="flex items-center text-sm text-gray-500">
@@ -103,13 +103,13 @@ export default async function Home() {
 								</div>
 							</CardContent>
 							<CardFooter>
-								{moment(event.presale_start).isAfter(moment()) ? (
+								{moment.tz(event.presale_start, "Europe/Berlin").isAfter(moment()) ? (
 									<div className="w-full text-center text-sm text-gray-500 bg-gray-50 p-4 rounded-lg">
 										Vorverkauf startet am{" "}
-										{moment(event.presale_start).format("DD.MM.YYYY HH:mm")}{" "}
+										{moment.tz(event.presale_start, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}{" "}
 										Uhr
 									</div>
-								) : moment(event.presale_end).isAfter(moment()) ? (
+								) : moment.tz(event.presale_end, "Europe/Berlin").isAfter(moment()) ? (
 									<Button asChild className="w-full">
 										<Link
 											href={`/event/${event.id}`}
@@ -122,7 +122,7 @@ export default async function Home() {
 								) : (
 									<div className="w-full text-center text-sm text-gray-500 bg-gray-50 p-4 rounded-lg">
 										Verkauf beendet am{" "}
-										{moment(event.presale_end).format("DD.MM.YYYY HH:mm")}{" "}
+										{moment.tz(event.presale_end, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}{" "}
 										Uhr
 									</div>
 								)}

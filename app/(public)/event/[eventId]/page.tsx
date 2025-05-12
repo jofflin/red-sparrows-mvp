@@ -9,7 +9,7 @@ import {
 import { VENUE } from "@/lib/globals";
 import { createClient } from "@/utils/supabase/server";
 import { CalendarDays, Clock, DoorOpen, Info, MapPin } from "lucide-react";
-import moment from "moment";
+import moment from "moment-timezone";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 moment.locale("de");
@@ -105,7 +105,7 @@ export default async function EventPage({
 							<div className="flex items-center text-sm text-gray-500">
 								<CalendarDays className="mr-2 h-4 w-4 text-secondary-500" />
 								<span>
-									Anpfiff: {moment(event.start_time).locale("de").format("DD.MM.YYYY HH:mm")}{" "}
+									Anpfiff: {moment.tz(event.start_time, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}{" "}
 									Uhr
 								</span>
 							</div>
@@ -113,9 +113,9 @@ export default async function EventPage({
 								<Clock className="mr-2 h-4 w-4 text-secondary-500" />
 								<span>
 									Vorverkauf:{" "}
-									{moment(event.presale_start).locale("de").format("DD.MM.YYYY HH:mm")}{" "}
+									{moment.tz(event.presale_start, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}{" "}
 									bis{" "}
-									{moment(event.presale_end).locale("de").format("DD.MM.YYYY HH:mm")}{" "}
+									{moment.tz(event.presale_end, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}{" "}
 									Uhr
 								</span>
 							</div>
@@ -123,7 +123,7 @@ export default async function EventPage({
 								<DoorOpen className="mr-2 h-4 w-4 text-secondary-500" />
 								<span>
 									Einlass ab:{" "}
-									{moment(event.admission_start).locale("de").format("DD.MM.YYYY HH:mm")}{" "}
+									{moment.tz(event.admission_start, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}{" "}
 									Uhr
 								</span>
 							</div>

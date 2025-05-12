@@ -48,7 +48,6 @@ export function CouponForm({
         setError("");
 
         if (
-            !amount ||
             !code ||
             !type
         ) {
@@ -56,7 +55,7 @@ export function CouponForm({
             return;
         }
 
-        if (Number.isNaN(amount) || amount <= 0) {
+        if (Number.isNaN(amount) || amount < 0) {
             setError("Anzahl Tickets muss größer als 0 sein");
             return;
         }

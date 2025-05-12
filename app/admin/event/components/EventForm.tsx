@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import type { Database } from "@/utils/supabase/database.types";
-import moment from "moment";
+import moment from "moment-timezone";
 import { useEffect, useState } from "react";
 
 moment.locale("de");
@@ -45,36 +45,36 @@ export function EventForm({
 	);
 	const [startDateTime, setStartDateTime] = useState(
 		event?.start_time
-			? moment(event.start_time).format("YYYY-MM-DDTHH:mm")
-			: moment().format("YYYY-MM-DDTHH:mm"),
+			? moment.tz(event.start_time, "Europe/Berlin").format("YYYY-MM-DDTHH:mm")
+			: moment().tz("Europe/Berlin").format("YYYY-MM-DDTHH:mm"),
 	);
 	console.log(startDateTime);
 	console.log(event?.start_time);
 	const [endDateTime, setEndDateTime] = useState(
 		event?.end_time
-			? moment(event.end_time).format("YYYY-MM-DDTHH:mm")
-			: moment().format("YYYY-MM-DDTHH:mm"),
+			? moment.tz(event.end_time, "Europe/Berlin").format("YYYY-MM-DDTHH:mm")
+			: moment().tz("Europe/Berlin").format("YYYY-MM-DDTHH:mm"),
 	);
 
 	const [presaleStart, setPresaleStart] = useState(
 		event?.presale_start
-			? moment(event.presale_start).format("YYYY-MM-DDTHH:mm")
-			: moment().format("YYYY-MM-DDTHH:mm"),
+			? moment.tz(event.presale_start, "Europe/Berlin").format("YYYY-MM-DDTHH:mm")
+			: moment().tz("Europe/Berlin").format("YYYY-MM-DDTHH:mm"),
 	);
 	const [presaleEnd, setPresaleEnd] = useState(
 		event?.presale_end
-			? moment(event.presale_end).format("YYYY-MM-DDTHH:mm")
-			: moment().format("YYYY-MM-DDTHH:mm"),
+			? moment.tz(event.presale_end, "Europe/Berlin").format("YYYY-MM-DDTHH:mm")
+			: moment().tz("Europe/Berlin").format("YYYY-MM-DDTHH:mm"),
 	);
 	const [admissionStart, setAdmissionStart] = useState(
 		event?.admission_start
-			? moment(event.admission_start).format("YYYY-MM-DDTHH:mm")
-			: moment().format("YYYY-MM-DDTHH:mm"),
+			? moment.tz(event.admission_start, "Europe/Berlin").format("YYYY-MM-DDTHH:mm")
+			: moment().tz("Europe/Berlin").format("YYYY-MM-DDTHH:mm"),
 	);
 	const [couponEnd, setCouponEnd] = useState(
 		event?.coupon_end
-			? moment(event.coupon_end).format("YYYY-MM-DDTHH:mm")
-			: moment().format("YYYY-MM-DDTHH:mm"),
+			? moment.tz(event.coupon_end, "Europe/Berlin").format("YYYY-MM-DDTHH:mm")
+			: moment().tz("Europe/Berlin").format("YYYY-MM-DDTHH:mm"),
 	);
 	const [tickets, setTickets] = useState(event?.tickets || 100);
 	const [error, setError] = useState("");
@@ -112,11 +112,11 @@ export function EventForm({
 			return;
 		}
 
-		const start = moment(startDateTime);
-		const presaleStartDate = moment(presaleStart);
-		const presaleEndDate = moment(presaleEnd);
-		const admissionStartDate = moment(admissionStart);
-		const couponEndDate = moment(couponEnd);
+		const start = moment.tz(startDateTime, "Europe/Berlin");
+		const presaleStartDate = moment.tz(presaleStart, "Europe/Berlin");
+		const presaleEndDate = moment.tz(presaleEnd, "Europe/Berlin");
+		const admissionStartDate = moment.tz(admissionStart, "Europe/Berlin");
+		const couponEndDate = moment.tz(couponEnd, "Europe/Berlin");
 		if (presaleStartDate >= presaleEndDate) {
 			setError("VVK-Start muss vor VVK-Ende liegen");
 			return;

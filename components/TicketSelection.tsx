@@ -5,7 +5,7 @@ import getStripe from "@/utils/get-stripejs";
 import { createClient } from "@/utils/supabase/client";
 import type { Database } from "@/utils/supabase/database.types";
 import { ShoppingCart, TicketPercent } from "lucide-react";
-import moment from 'moment'
+import moment from 'moment-timezone'
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
@@ -80,7 +80,7 @@ export default function TicketSelection({
 		if (coupon && coupon.coupon.type === "2") {
 			remaining = remaining + coupon.coupon.amount;
 		}
-		if (moment() > moment(event.coupon_end)) {
+		if (moment.tz("Europe/Berlin") > moment.tz(event.coupon_end, "Europe/Berlin")) {
 			remaining = event.tickets - currentTickets.length
 		}
 		return remaining;

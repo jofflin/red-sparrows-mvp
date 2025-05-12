@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { VENUE } from "@/lib/globals";
 import { createClient } from "@/utils/supabase/server";
 import { CalendarDays, MapPin, Users } from "lucide-react";
-import moment from "moment";
+import moment from "moment-timezone";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { UpdateEventForm } from "./components/UpdateEventForm";
@@ -77,7 +77,7 @@ export default async function EventDetailPage({
 					<div className="flex items-center">
 						<CalendarDays className="mr-2 h-5 w-5 text-gray-500" />
 						<span>
-							{moment(event.start_time).format("DD.MM.YYYY HH:mm")}
+							{moment.tz(event.start_time, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}
 						</span>
 					</div>
 					<div className="flex items-center">

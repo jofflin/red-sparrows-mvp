@@ -2,7 +2,7 @@ import { AdminEventSelectionComponent } from '@/components/admin-event-selection
 import { Button } from "@/components/ui/button"
 import { createClient } from '@/utils/supabase/server'
 import { ArrowLeft } from "lucide-react"
-import moment from 'moment'
+import moment from 'moment-timezone'
 import Link from "next/link"
 import { redirect } from 'next/navigation'
 moment.locale("de");
@@ -13,8 +13,8 @@ export default async function EventScanSelectionPage() {
   const { data, error, count, status, statusText } = await supabase
     .from("events")
     .select("*")
-    .gt("start_time", moment(new Date().getTime() - 1000 * 60 * 60 * 24 * 30).toISOString().replace('T', ' ').replace('Z', '+00:00'))
-    .lt("start_time", moment(new Date().getTime() + 1000 * 60 * 60 * 48 * 30).toISOString().replace('T', ' ').replace('Z', '+00:00'))
+    .gt("start_time", moment.tz(new Date().getTime() - 1000 * 60 * 60 * 24 * 30, "Europe/Berlin").toISOString().replace('T', ' ').replace('Z', '+00:00'))
+    .lt("start_time", moment.tz(new Date().getTime() + 1000 * 60 * 60 * 48 * 30, "Europe/Berlin").toISOString().replace('T', ' ').replace('Z', '+00:00'))
     .select("*")
     .order("start_time", { ascending: true });
   if (error || status !== 200) {

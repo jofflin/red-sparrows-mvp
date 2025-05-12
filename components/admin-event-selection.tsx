@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { CalendarDays, QrCode, Users } from "lucide-react"
-import moment from 'moment'
+import moment from 'moment-timezone'
 import Link from "next/link"
 import { useState } from 'react'
 moment.locale("de");
@@ -36,7 +36,7 @@ export function AdminEventSelectionComponent({ events }: AdminEventSelectionComp
                     <span className="font-semibold">{event.name}</span>
                     <span className="text-sm text-gray-500 flex items-center mt-1">
                       <CalendarDays className="w-4 h-4 mr-1" />
-                      {moment(event.start_time).format("DD.MM.YYYY HH:mm")} Uhr
+                      {moment.tz(event.start_time, "Europe/Berlin").format("DD.MM.YYYY HH:mm")} Uhr
                     </span>
                   </div>
                 </Label>

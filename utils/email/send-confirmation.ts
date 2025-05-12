@@ -5,7 +5,7 @@ import type { Database } from "@/utils/supabase/database.types";
 import type { Template } from "@pdfme/common";
 import { generate } from "@pdfme/generator";
 import { barcodes, image, text } from "@pdfme/schemas";
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { PDFDocument } from "pdf-lib";
 import { Resend } from "resend";
 moment.locale('de');
@@ -181,8 +181,9 @@ export const sendConfirmation = async ({
 		}
 		const inputs = [
 			{
-				title: `Tickets für das Spiel am ${moment(
+				title: `Tickets für das Spiel am ${moment.tz(
 					event.start_time,
+					"Europe/Berlin"
 				).format("DD.MM.YYYY HH:mm")} Uhr`,
 				event: `${event.name} (${VENUE})`,
 				location: `Ticketkategorie: ${categoryMapper(tickets[i].ticket_category)}`,

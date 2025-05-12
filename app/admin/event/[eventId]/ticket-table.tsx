@@ -13,7 +13,7 @@ import {
 	ChevronDown,
 	ChevronUp,
 } from "lucide-react";
-import moment from "moment";
+import moment from "moment-timezone";
 import { useState } from "react";
 moment.locale("de");
 
@@ -108,7 +108,7 @@ export default function TicketTable(props: TicketTableProps) {
 								<TableCell>{ticket.scan_id}</TableCell>
 								<TableCell>{props.coupons.find(coupon => coupon.id === ticket.couponId)?.code || "Kein Coupon"}</TableCell>
 								<TableCell>
-									{moment(ticket.created_at).format("DD.MM.YYYY HH:mm")}
+									{moment.tz(ticket.created_at, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}
 								</TableCell>
 								<TableCell>
 									{ticket.bought_at ? "Gekauft" : "Abgebrochen"}

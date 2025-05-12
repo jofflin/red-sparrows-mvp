@@ -1,14 +1,14 @@
 'use server'
 
 import { createClient } from "@/utils/supabase/server";
-import moment from "moment";
+import moment from "moment-timezone";
 moment.locale("de");
 
 export async function updateTicketStatus(id: string) {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("tickets")
-    .update({ redeemed_at: moment().toISOString() })
+    .update({ redeemed_at: moment.tz("Europe/Berlin").toISOString() })
     .eq("scan_id", id)
     .select("*")
     .single();

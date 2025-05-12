@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import moment from "moment";
+import moment from "moment-timezone";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 moment.locale("de");
@@ -30,11 +30,11 @@ export async function createEvent({
 
 	console.log(startDateTime, endDateTime, presaleStart, presaleEnd, couponEnd, admissionStart);
 	// Convert to UTC timestamps
-	const startTime = moment(startDateTime).toISOString();
-	const endTime = moment(endDateTime).toISOString();
-	const presaleStartTime = moment(presaleStart).toISOString();
-	const presaleEndTime = moment(presaleEnd).toISOString();
-	const admissionStartTime = moment(admissionStart).toISOString();
+	const startTime = moment.tz(startDateTime, "Europe/Berlin").toISOString();
+	const endTime = moment.tz(endDateTime, "Europe/Berlin").toISOString();
+	const presaleStartTime = moment.tz(presaleStart, "Europe/Berlin").toISOString();
+	const presaleEndTime = moment.tz(presaleEnd, "Europe/Berlin").toISOString();
+	const admissionStartTime = moment.tz(admissionStart, "Europe/Berlin").toISOString();
 
 	const { error } = await supabase.from("events").insert({
 		name: eventName,
@@ -83,11 +83,11 @@ export async function updateEvent({
 	const supabase = createClient();
 
 	// Convert to UTC timestamps
-	const startTime = moment(startDateTime).utc().toISOString();
-	const endTime = moment(endDateTime).utc().toISOString();
-	const presaleStartTime = moment(presaleStart).utc().toISOString();
-	const presaleEndTime = moment(presaleEnd).utc().toISOString();
-	const admissionStartTime = moment(admissionStart).utc().toISOString();
+	const startTime = moment.tz(startDateTime, "Europe/Berlin").toISOString();
+	const endTime = moment.tz(endDateTime, "Europe/Berlin").toISOString();
+	const presaleStartTime = moment.tz(presaleStart, "Europe/Berlin").toISOString();
+	const presaleEndTime = moment.tz(presaleEnd, "Europe/Berlin").toISOString();
+	const admissionStartTime = moment.tz(admissionStart, "Europe/Berlin").toISOString();
 
 
 	const { error } = await supabase

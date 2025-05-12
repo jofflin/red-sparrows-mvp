@@ -11,7 +11,7 @@ import { HOMEPAGE_URL, VENUE } from "@/lib/globals";
 import type { Database } from "@/utils/supabase/database.types";
 import { createClient } from "@/utils/supabase/server";
 import { Calendar, CheckCircle, Home, MapPin, Ticket } from "lucide-react";
-import moment from "moment";
+import moment from "moment-timezone";
 import Link from "next/link";
 import DownloadButton from "./DownloadButton";
 moment.locale("de");
@@ -111,7 +111,7 @@ export default async function SuccessPage({
 	}
 
 	ticketGroups = ticketGroups.sort((a, b) => {
-		return moment(a.event.start_time).diff(moment(b.event.start_time));
+		return moment.tz(a.event.start_time, "Europe/Berlin").diff(moment.tz(b.event.start_time, "Europe/Berlin"));
 	}).filter((group) => {
 		return group.tickets.length > 0;
 	});
@@ -165,7 +165,7 @@ export default async function SuccessPage({
 							<div className="flex items-center space-x-2 text-gray-600">
 								<Calendar className="h-5 w-5 text-secondary-500" />
 								<span>
-									{moment(group.event.start_time).format("DD.MM.YYYY HH:mm")} Uhr
+									{moment.tz(group.event.start_time, "Europe/Berlin").format("DD.MM.YYYY HH:mm")} Uhr
 								</span>
 							</div>
 							<div className="flex items-center space-x-2 text-gray-600">

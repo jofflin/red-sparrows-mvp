@@ -27,7 +27,7 @@ export default async function Home() {
 		.from("events")
 		.select("*")
 		// event presale end date is in the future
-		.gt("end_time", moment().toISOString())
+		.gt("end_time", moment.tz("Europe/Berlin").toISOString())
 		.order("start_time", { ascending: true });
 	if (error || status !== 200) {
 		console.error(error);
@@ -103,13 +103,13 @@ export default async function Home() {
 								</div>
 							</CardContent>
 							<CardFooter>
-								{moment.tz(event.presale_start, "Europe/Berlin").isAfter(moment()) ? (
+								{moment.tz(event.presale_start, "Europe/Berlin").isAfter(moment.tz("Europe/Berlin")) ? (
 									<div className="w-full text-center text-sm text-gray-500 bg-gray-50 p-4 rounded-lg">
 										Vorverkauf startet am{" "}
 										{moment.tz(event.presale_start, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}{" "}
 										Uhr
 									</div>
-								) : moment.tz(event.presale_end, "Europe/Berlin").isAfter(moment()) ? (
+								) : moment.tz(event.presale_end, "Europe/Berlin").isAfter(moment.tz("Europe/Berlin")) ? (
 									<Button asChild className="w-full">
 										<Link
 											href={`/event/${event.id}`}

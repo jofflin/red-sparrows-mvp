@@ -1,7 +1,7 @@
 "use client";
 
 import type { Database } from "@/utils/supabase/database.types";
-import moment from "moment";
+import moment from "moment-timezone";
 import { updateEvent } from "../../actions";
 import { EventForm } from "../../components/EventForm";
 moment.locale("de");
@@ -26,12 +26,12 @@ export function UpdateEventForm({ event }: UpdateEventFormProps) {
 		await updateEvent({
 			id: event.id,
 			...data,
-			startDateTime: moment(data.startDateTime).utc().toISOString(),
-			endDateTime: moment(data.endDateTime).utc().toISOString(),
-			presaleStart: moment(data.presaleStart).utc().toISOString(),
-			presaleEnd: moment(data.presaleEnd).utc().toISOString(),
-			couponEnd: moment(data.couponEnd).utc().toISOString(),
-			admissionStart: moment(data.admissionStart).utc().toISOString(),
+			startDateTime: moment.tz(data.startDateTime, "Europe/Berlin").toISOString(),
+			endDateTime: moment.tz(data.endDateTime, "Europe/Berlin").toISOString(),
+			presaleStart: moment.tz(data.presaleStart, "Europe/Berlin").toISOString(),
+			presaleEnd: moment.tz(data.presaleEnd, "Europe/Berlin").toISOString(),
+			couponEnd: moment.tz(data.couponEnd, "Europe/Berlin").toISOString(),
+			admissionStart: moment.tz(data.admissionStart, "Europe/Berlin").toISOString(),
 		});
 	};
 

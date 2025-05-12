@@ -3,7 +3,7 @@
 import stripe from "@/utils/stripe";
 import type { Database } from "@/utils/supabase/database.types";
 import { createClient } from "@/utils/supabase/server";
-import moment from "moment";
+import moment from "moment-timezone";
 import { headers } from "next/headers";
 import type Stripe from "stripe";
 
@@ -110,7 +110,7 @@ const reserveTickets = async ({
 	ticketSelection: { category: string; amount: number }[];
 }): Promise<boolean> => {
 	const supabase = createClient();
-	const now = moment().toISOString();
+	const now = moment.tz("Europe/Berlin").toISOString();
 
 	// Create purchase session
 	const { error: sessionError } = await supabase
@@ -137,7 +137,7 @@ const reserveTickets = async ({
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
-						reserved_until: moment().add(15, "minutes").toISOString(),
+						reserved_until: moment.tz("Europe/Berlin").add(15, "minutes").toISOString(),
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
@@ -148,7 +148,7 @@ const reserveTickets = async ({
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
-						reserved_until: moment().add(15, "minutes").toISOString(),
+						reserved_until: moment.tz("Europe/Berlin").add(15, "minutes").toISOString(),
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
@@ -159,7 +159,7 @@ const reserveTickets = async ({
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
-						reserved_until: moment().add(15, "minutes").toISOString(),
+						reserved_until: moment.tz("Europe/Berlin").add(15, "minutes").toISOString(),
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
@@ -175,7 +175,7 @@ const reserveTickets = async ({
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
-						reserved_until: moment().add(15, "minutes").toISOString(),
+						reserved_until: moment.tz("Europe/Berlin").add(15, "minutes").toISOString(),
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,

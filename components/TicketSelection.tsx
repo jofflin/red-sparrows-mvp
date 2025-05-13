@@ -433,7 +433,7 @@ export default function TicketSelection({
 									htmlFor={type.name}
 									className="block text-sm font-medium mb-2"
 								>
-									{type.name} ({type.price * (isMember ? 0.5 : 1)}€)
+									{type.name} ({(type.price * (isMember ? 0.5 : 1)).toFixed(2)}€)
 								</label>
 								<input
 									id={type.name}
@@ -525,8 +525,8 @@ export default function TicketSelection({
 										</div>
 										<span className="ml-4">
 											{
-												(ticketTypes.find((type) => type.name === t.category.split(" - ")[1])
-													?.price || 0) * 0.5}
+												((ticketTypes.find((type) => type.name === t.category.split(" - ")[1])
+													?.price || 0) * 0.5).toFixed(2)}
 											€
 										</span>
 									</div>
@@ -534,7 +534,7 @@ export default function TicketSelection({
 							<hr className="my-2 bg-secondary-500 text-secondary-500" />
 						</div>
 					)}
-					<div className="flex items-center justify-between">
+					<div className="flex items-center justify-between px-2 ">
 						<span className="font-medium">Gesamt</span>
 						<span className="font-medium">{getTotalPrice().toFixed(2)}€</span>
 					</div>

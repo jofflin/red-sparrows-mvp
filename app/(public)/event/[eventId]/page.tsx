@@ -94,7 +94,7 @@ export default async function EventPage({
 				<div className="lg:col-span-2 space-y-8">
 					{/* Event Image */}
 					{/* Event Details */}
-					<Card className="bg-secondary-50">
+					{/* <Card className="bg-secondary-50">
 						<CardHeader>
 							<CardTitle>Info:</CardTitle>
 						</CardHeader>
@@ -110,7 +110,7 @@ export default async function EventPage({
 								</Link>
 							</Button>
 						</CardContent>
-					</Card>
+					</Card> */}
 					<Card>
 						<CardHeader>
 							<CardTitle>Event Details</CardTitle>

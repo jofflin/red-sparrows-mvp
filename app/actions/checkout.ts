@@ -19,6 +19,10 @@ type CheckoutData = {
 		category: string;
 		amount: number;
 	}[];
+	memberTicketSelection: {
+		category: string;
+		amount: number;
+	}[];
 };
 
 
@@ -32,6 +36,7 @@ export async function createCheckoutSession(
 	const lineItems = createLineItems({
 		prices: data.prices,
 		ticketSelection: data.ticketSelection,
+		memberTicketSelection: data.memberTicketSelection,
 	});
 
 	const session = await createStripeSession(lineItems, origin, data.eventId);
@@ -40,6 +45,7 @@ export async function createCheckoutSession(
 		eventId: data.eventId,
 		prices: data.prices,
 		ticketSelection: data.ticketSelection,
+		memberTicketSelection: data.memberTicketSelection,
 		couponId: data.couponId,
 		couponType: data.couponType,
 	});
@@ -71,6 +77,7 @@ const createStripeSession = async (
 const createLineItems = (data: {
 	prices: Database["public"]["Tables"]["ticket_categories"]["Row"][];
 	ticketSelection: { category: string; amount: number }[];
+	memberTicketSelection: { category: string; amount: number }[];
 }): Stripe.Checkout.SessionCreateParams.LineItem[] => {
 	let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
@@ -89,6 +96,22 @@ const createLineItems = (data: {
 			});
 		}
 	}
+	for (const ticket of data.memberTicketSelection) {
+		const price = data.prices.find((p) => p.name === ticket.category.split(" - ")[1]);
+		if (price) {
+			lineItems.push({
+				price_data: {
+					currency: "eur",
+					product_data: {
+						name: `Mitgliederticket - ${price.name}`,
+					},
+					unit_amount: price.price * 100 * 0.5,
+				},
+				quantity: ticket.amount,
+			});
+		}
+	}
+	console.log(lineItems);
 	lineItems = lineItems.filter((item) => item.quantity && item.quantity > 0);
 
 	return lineItems;
@@ -101,6 +124,7 @@ const reserveTickets = async ({
 	couponId,
 	couponType,
 	ticketSelection,
+	memberTicketSelection,
 }: {
 	sessionId: string;
 	eventId: number;
@@ -108,6 +132,7 @@ const reserveTickets = async ({
 	couponType: string | null;
 	prices: Database["public"]["Tables"]["ticket_categories"]["Row"][];
 	ticketSelection: { category: string; amount: number }[];
+	memberTicketSelection: { category: string; amount: number }[];
 }): Promise<boolean> => {
 	const supabase = createClient();
 	const now = moment.tz("Europe/Berlin").toISOString();
@@ -134,6 +159,7 @@ const reserveTickets = async ({
 				for (let i = 0; i < ticket.amount; i++) {
 					tickets.push({
 						event_id: 2,
+						isMember: false,
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
@@ -145,6 +171,7 @@ const reserveTickets = async ({
 					});
 					tickets.push({
 						event_id: 4,
+						isMember: false,
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
@@ -156,6 +183,7 @@ const reserveTickets = async ({
 					});
 					tickets.push({
 						event_id: 5,
+						isMember: false,
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),
@@ -172,6 +200,69 @@ const reserveTickets = async ({
 				for (let i = 0; i < ticket.amount; i++) {
 					tickets.push({
 						event_id: eventId,
+						isMember: false,
+						ticket_category: price.id,
+						session_id: sessionId,
+						scan_id: generateRandomString(),
+						reserved_until: moment.tz("Europe/Berlin").add(15, "minutes").toISOString(),
+						created_at: now,
+						bought_at: null,
+						redeemed_at: null,
+						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+					});
+				}
+			}
+		}
+	}
+	for (const ticket of memberTicketSelection) {
+		const price = prices.find((p) => p.name === ticket.category.split(" - ")[1]);
+		if (price) {
+			if (ticket.category.includes("Dauerkarten")) {
+				for (let i = 0; i < ticket.amount; i++) {
+					tickets.push({
+						event_id: 2,
+						isMember: true,
+						ticket_category: price.id,
+						session_id: sessionId,
+						scan_id: generateRandomString(),
+						reserved_until: moment.tz("Europe/Berlin").add(15, "minutes").toISOString(),
+						created_at: now,
+						bought_at: null,
+						redeemed_at: null,
+						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+					});
+					tickets.push({
+						event_id: 4,
+						isMember: true,
+						ticket_category: price.id,
+						session_id: sessionId,
+						scan_id: generateRandomString(),
+						reserved_until: moment.tz("Europe/Berlin").add(15, "minutes").toISOString(),
+						created_at: now,
+						bought_at: null,
+						redeemed_at: null,
+						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+					});
+					tickets.push({
+						event_id: 5,
+						isMember: true,
+						ticket_category: price.id,
+						session_id: sessionId,
+						scan_id: generateRandomString(),
+						reserved_until: moment.tz("Europe/Berlin").add(15, "minutes").toISOString(),
+						created_at: now,
+						bought_at: null,
+						redeemed_at: null,
+						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+					});
+				}
+
+			} else {
+				// Normal tickets
+				for (let i = 0; i < ticket.amount; i++) {
+					tickets.push({
+						event_id: eventId,
+						isMember: true,
 						ticket_category: price.id,
 						session_id: sessionId,
 						scan_id: generateRandomString(),

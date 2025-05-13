@@ -39,7 +39,7 @@ export default function DownloadButton({ tickets, events, categories }: Download
                         "Europe/Berlin"
                     ).format("DD.MM.YYYY HH:mm")} Uhr`,
                     event: `${event.name} (${VENUE})`,
-                    location: `Ticketkategorie: ${categoryMapper(tickets[i].ticket_category)}`,
+                    location: `Ticketkategorie: ${categoryMapper(tickets[i].ticket_category)} ${tickets[i].isMember ? "(Mitgliederticket)" : ""}`,
                     info: "Bitte zeigen Sie diesen QR-Code beim Einlass vor.\nErmäßigungen sind nur mit gültigem Ausweis gültig\n\nAGB: https://red-sparrows.getnono.de/agb\nDatenschutz: https://red-sparrows.getnono.de/impressum\nImpressum: https://red-sparrows.getnono.de/impressum",
                     qr: tickets[i].scan_id || "",
                     "code-text": tickets[i].scan_id || "",

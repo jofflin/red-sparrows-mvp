@@ -99,6 +99,7 @@ export default function TicketTable(props: TicketTableProps) {
 								Kaufdatum <SortIcon columnKey="created_at" />
 							</TableHead>
 							<TableHead>Status</TableHead>
+							<TableHead>Mitglied</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -113,6 +114,7 @@ export default function TicketTable(props: TicketTableProps) {
 								<TableCell>
 									{ticket.bought_at ? "Gekauft" : "Abgebrochen"}
 								</TableCell>
+								<TableCell>{ticket.isMember ? "Ja" : "Nein"}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

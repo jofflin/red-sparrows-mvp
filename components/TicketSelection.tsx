@@ -1,14 +1,16 @@
 "use client";
 import { createCheckoutSession } from "@/app/actions/checkout";
 import { getCoupon } from "@/app/actions/coupons";
+import { Switch } from "@/components/ui/switch"
 import getStripe from "@/utils/get-stripejs";
 import { createClient } from "@/utils/supabase/client";
 import type { Database } from "@/utils/supabase/database.types";
-import { ShoppingCart, TicketPercent } from "lucide-react";
+import { Group, ShoppingCart, TicketPercent, Users } from "lucide-react";
 import moment from 'moment-timezone'
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
+
 import {
 	Card,
 	CardContent,
@@ -50,6 +52,10 @@ export default function TicketSelection({
 	const [ticketSelection, setTicketSelection] = useState<TicketSelection>(
 		ticketTypes.map((type) => ({ category: type.name, amount: 0 })),
 	);
+	const [memberTicketSelection, setMemberTicketSelection] = useState<TicketSelection>(
+		ticketTypes.map((type) => ({ category: `Mitglied - ${type.name}`, amount: 0 })),
+	);
+	const [isMember, setIsMember] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [couponCode, setCouponCode] = useState<string>("");
 	const [coupon, setCoupon] = useState<{ coupon: Database["public"]["Tables"]["coupons"]["Row"], used: number } | null>();
@@ -57,15 +63,29 @@ export default function TicketSelection({
 	const supabase = createClient();
 	const [currentTickets, setCurrentTickets] = useState(tickets);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		if (!isMember) {
+			setMemberTicketSelection(ticketTypes.map((type) => ({ category: `Mitglied - ${type.name}`, amount: 0 })));
+		}
+	}, [isMember]);
+
 	const getTotalPrice = () => {
 		let total = 0;
-		if (ticketSelection.length === 0) return total;
 		for (const ticket of ticketSelection) {
 			const ticketType = ticketTypes.find(
 				(type) => type.name === ticket.category,
 			);
 			if (ticketType) {
 				total += ticket.amount * ticketType.price;
+			}
+		}
+		for (const ticket of memberTicketSelection) {
+			const ticketType = ticketTypes.find(
+				(type) => type.name === ticket.category.split(" - ")[1],
+			);
+			if (ticketType) {
+				total += ticket.amount * ticketType.price * 0.5;
 			}
 		}
 		return total;
@@ -88,8 +108,9 @@ export default function TicketSelection({
 
 	const getTotalTickets = () => {
 		let total = 0;
-		if (ticketSelection.length === 0) return total;
-		for (const ticket of ticketSelection) {
+		if (ticketSelection.length === 0 && memberTicketSelection.length === 0) return total;
+		const tickets = [...ticketSelection, ...memberTicketSelection];
+		for (const ticket of tickets) {
 			total += ticket.amount;
 		}
 		return total;
@@ -173,12 +194,28 @@ export default function TicketSelection({
 				return;
 			}
 			let prices = ticketTypes;
+			if (isMember) {
+				const price1 = prices.find((p) => p.id === 1);
+				const price2 = prices.find((p) => p.id === 2);
+				const price3 = prices.find((p) => p.id === 3);
+				if (price1) {
+					price1.price = price1.price * 0.5;
+				}
+				if (price2) {
+					price2.price = price2.price * 0.5;
+				}
+				if (price3) {
+					price3.price = price3.price * 0.5;
+				}
+			}
 			if (coupon && coupon.coupon.type === "2") {
 				prices = [...prices, { id: 6, name: "Sponsorticket", price: 0, created_at: "", description: "" }];
 			}
+			console.log(ticketSelection, memberTicketSelection);
 			const session = await createCheckoutSession({
 				eventId: event.id,
-				ticketSelection,
+				ticketSelection: ticketSelection,
+				memberTicketSelection: memberTicketSelection,
 				prices,
 				couponId: coupon?.coupon.id || null,
 				couponType: coupon?.coupon.type || null,
@@ -209,35 +246,7 @@ export default function TicketSelection({
 							<ShoppingCart className="h-5 w-5 text-secondary-600" />
 							<span className="font-medium">Warenkorb</span>
 						</div>
-						<span className="text-lg font-semibold">
-							{getTotalPrice().toFixed(2)}€
-						</span>
 					</div>
-					{getTotalTickets() > 0 && (
-						<div className="mt-3 space-y-2 text-sm text-gray-600">
-							<div className="flex wrap flex-wrap">
-								{ticketSelection
-									.filter((t) => t.amount !== 0)
-									.map((t) => (
-										<div
-											key={t.category}
-											className="flex items-center bg-secondary-500 text-white rounded-full px-2 py-1 mr-2 mb-2"
-										>
-											<span>{t.amount}x</span>
-											<span className="ml-1 flex-nowrap text-nowrap">
-												{t.category}
-											</span>
-											<span className="ml-1">
-												{t.amount *
-													(ticketTypes.find((type) => type.name === t.category)
-														?.price || 0)}
-												€
-											</span>
-										</div>
-									))}
-							</div>
-						</div>
-					)}
 				</CardContent>
 			</Card>
 			<Card className="sticky top-0 z-10 bg-white shadow-lg">
@@ -403,8 +412,137 @@ export default function TicketSelection({
 				</CardContent>
 			</Card>
 
+			<Card className="sticky top-0 z-10 bg-white shadow-lg">
+				<CardContent className="py-4 flex flex-col gap-4">
+					<div className="flex items-center justify-between">
+						<div className="flex items-center space-x-2">
+							<Users className="h-5 w-5 text-secondary-600" />
+							<span className="font-medium">Mitgliedertickets?</span>
+						</div>
+					</div>
+					<div className="flex items-center space-x-2">
+						<Switch checked={isMember} onCheckedChange={setIsMember} />
+						<span className="font-medium">Ja, ich möchte Mitgliedertickets kaufen</span>
+					</div>
+					<span className="font-sm">Exklusiver Mitgliedertarif für Mitglieder des HSG Freiburg e.V.; Mitgliedschaft erforderlich!</span>
+
+					<div className="grid grid-cols-2 gap-4">
+						{isMember && ticketTypes.map((type) => (
+							<div key={type.id} className="h-full flex flex-col justify-between">
+								<label
+									htmlFor={type.name}
+									className="block text-sm font-medium mb-2"
+								>
+									{type.name} ({type.price * (isMember ? 0.5 : 1)}€)
+								</label>
+								<input
+									id={type.name}
+									type="number"
+									min="0"
+									max={Math.min(getRemainingTickets(), 50)}
+									value={
+										memberTicketSelection.find((t) => t.category === `Mitglied - ${type.name}`)
+											?.amount || 0
+									}
+									onChange={(e) => {
+										const amount = Number.parseInt(e.target.value);
+										const allowed = getRemainingTickets();
+										const newTickets = memberTicketSelection.map((t) =>
+											t.category === `Mitglied - ${type.name}`
+												? {
+													...t,
+													amount,
+												}
+												: t,
+										);
+										const remaining =
+											allowed -
+											newTickets.reduce((acc, t) => acc + t.amount, 0);
+
+										if (remaining < 0) {
+											setMemberTicketSelection(
+												memberTicketSelection.map((t) =>
+													t.category === `Mitglied - ${type.name}`
+														? {
+															...t,
+															amount: amount + remaining,
+														}
+														: t,
+												),
+											);
+											return;
+										}
+										setMemberTicketSelection(newTickets);
+									}}
+									className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
+								/>
+							</div>
+						))}
+					</div>
+				</CardContent>
+			</Card>
+			<Card className="sticky top-0 z-10 bg-white shadow-lg">
+				<CardContent className="py-4">
+
+					{getTotalTickets() > 0 && (
+						<div className="flex flex-col">
+							{ticketSelection
+								.filter((t) => t.amount !== 0)
+								.map((t) => (
+									<>
+										<div
+											key={t.category}
+											className="flex justify-between px-2 py-1 mr-2 mb-2"
+										>
+											<div>
+												<span>{t.amount}x</span>
+												<span className="ml-1 text-wrap">
+													{t.category}
+												</span>
+											</div>
+											<span className="ml-4">
+												{t.amount * (
+													ticketTypes.find((type) => type.name === t.category)
+														?.price || 0
+												)}
+												€
+											</span>
+										</div>
+									</>
+								))}
+							{memberTicketSelection
+								.filter((t) => t.amount !== 0)
+								.map((t) => (
+									<div
+										key={t.category}
+										className="flex justify-between px-2 py-1 mr-2 mb-2"
+									>
+										<div>
+											<span>{t.amount}x</span>
+											<span className="ml-1 text-wrap">
+												{t.category}
+											</span>
+										</div>
+										<span className="ml-4">
+											{
+												(ticketTypes.find((type) => type.name === t.category.split(" - ")[1])
+													?.price || 0) * 0.5}
+											€
+										</span>
+									</div>
+								))}
+							<hr className="my-2 bg-secondary-500 text-secondary-500" />
+						</div>
+					)}
+					<div className="flex items-center justify-between">
+						<span className="font-medium">Gesamt</span>
+						<span className="font-medium">{getTotalPrice().toFixed(2)}€</span>
+					</div>
+				</CardContent>
+			</Card>
+
 			{/* Checkout - Simplified */}
-			<Card>
+			<Card className="sticky top-0 z-10 bg-white shadow-lg">
 				<CardContent className="pt-6">
 					<div className="space-y-4">
 						<div className="flex items-center">

@@ -138,6 +138,7 @@ export type Database = {
           created_at: string
           event_id: number
           id: number
+          isMember: boolean
           redeemed_at: string | null
           reserved_until: string
           scan_id: string
@@ -150,6 +151,7 @@ export type Database = {
           created_at?: string
           event_id: number
           id?: number
+          isMember?: boolean
           redeemed_at?: string | null
           reserved_until: string
           scan_id: string
@@ -162,6 +164,7 @@ export type Database = {
           created_at?: string
           event_id?: number
           id?: number
+          isMember?: boolean
           redeemed_at?: string | null
           reserved_until?: string
           scan_id?: string

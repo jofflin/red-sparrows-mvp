@@ -194,20 +194,6 @@ export default function TicketSelection({
 				return;
 			}
 			let prices = ticketTypes;
-			if (isMember) {
-				const price1 = prices.find((p) => p.id === 1);
-				const price2 = prices.find((p) => p.id === 2);
-				const price3 = prices.find((p) => p.id === 3);
-				if (price1) {
-					price1.price = price1.price * 0.5;
-				}
-				if (price2) {
-					price2.price = price2.price * 0.5;
-				}
-				if (price3) {
-					price3.price = price3.price * 0.5;
-				}
-			}
 			if (coupon && coupon.coupon.type === "2") {
 				prices = [...prices, { id: 6, name: "Sponsorticket", price: 0, created_at: "", description: "" }];
 			}

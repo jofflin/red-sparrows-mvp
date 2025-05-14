@@ -81,7 +81,7 @@ export default async function EventPage({
 		data: prices,
 		error: priceError,
 		status: priceStatus,
-	} = await supabase.from("ticket_categories").select("*").neq("id", 6);
+	} = await supabase.from("ticket_categories").select("*").neq("id", 6).neq("id", 7);
 
 	if (priceError || priceStatus !== 200) {
 		console.error(priceError);

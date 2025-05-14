@@ -47,7 +47,7 @@ export default async function Home() {
 
 	return (
 		<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-24">
-			<Card className="bg-secondary-50 mb-8">
+			{/* <Card className="bg-secondary-50 mb-8">
 				<CardHeader>
 					<CardTitle>Info:</CardTitle>
 				</CardHeader>
@@ -63,7 +63,7 @@ export default async function Home() {
 						</Link>
 					</Button>
 				</CardContent>
-			</Card>
+			</Card> */}
 			{data.length === 0 ? (
 				<div className="flex flex-col items-center justify-center py-12 text-center">
 					<Calendar className="h-16 w-16 text-secondary-500 mb-4" />

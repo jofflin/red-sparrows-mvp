@@ -95,6 +95,7 @@ export function CouponForm({
                             <SelectContent>
                                 <SelectItem value="1">Gastmannschaft Kontingent freischalten</SelectItem>
                                 <SelectItem value="2">Sponsoren Tickets (100% Rabatt)</SelectItem>
+                                <SelectItem value="3">GS Sponsoren Tickets (100% Rabatt)</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

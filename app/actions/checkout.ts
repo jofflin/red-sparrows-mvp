@@ -167,7 +167,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+						couponId: (couponId && (price.id === 6 || price.id === 7)) ? couponId : couponType === "1" ? couponId : null,
 					});
 					tickets.push({
 						event_id: 4,
@@ -179,7 +179,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+						couponId: (couponId && (price.id === 6 || price.id === 7)) ? couponId : couponType === "1" ? couponId : null,
 					});
 					tickets.push({
 						event_id: 5,
@@ -191,7 +191,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+						couponId: (couponId && (price.id === 6 || price.id === 7)) ? couponId : couponType === "1" ? couponId : null,
 					});
 				}
 
@@ -208,7 +208,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+						couponId: (couponId && (price.id === 6 || price.id === 7)) ? couponId : couponType === "1" ? couponId : null,
 					});
 				}
 			}
@@ -229,7 +229,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+						couponId: (couponId && (price.id === 6 || price.id === 7)) ? couponId : couponType === "1" ? couponId : null,
 					});
 					tickets.push({
 						event_id: 4,
@@ -241,7 +241,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+						couponId: (couponId && (price.id === 6 || price.id === 7)) ? couponId : couponType === "1" ? couponId : null,
 					});
 					tickets.push({
 						event_id: 5,
@@ -253,7 +253,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+						couponId: (couponId && (price.id === 6 || price.id === 7)) ? couponId : couponType === "1" ? couponId : null,
 					});
 				}
 
@@ -270,7 +270,7 @@ const reserveTickets = async ({
 						created_at: now,
 						bought_at: null,
 						redeemed_at: null,
-						couponId: (couponId && price.id === 6) ? couponId : couponType === "1" ? couponId : null,
+						couponId: (couponId && (price.id === 6 || price.id === 7)) ? couponId : couponType === "1" ? couponId : null,
 					});
 				}
 			}

@@ -22,6 +22,7 @@ export default function CouponList({ data, onEdit, onDelete }: CouponListProps) 
     const typeMap = {
         '1': "Gast",
         '2': "Sponsor",
+        '3': "GS Sponsor",
     }
 
     return (
@@ -33,9 +34,9 @@ export default function CouponList({ data, onEdit, onDelete }: CouponListProps) 
                         <div className="flex flex-col">
                             <p className="text-gray-600">Code: {entry.coupon.code}</p>
                             {entry.coupon.type === '1' && <p className="text-gray-600 font-semibold">Dieser Coupon erhöht die Menge an Tickets von 90% auf 100%.</p>}
-                            {entry.coupon.type === '2' && <p className="text-gray-600">Gesamt: {entry.coupon.amount}</p>}
-                            {entry.coupon.type === '2' && <p className="text-gray-600">Noch Verfügbar: {entry.coupon.amount - entry.usages}</p>}
-                            {entry.coupon.type === '2' && <p className="text-gray-600 font-semibold">Dieser Coupon wird eingelöst, um Tickets kostenfrei zu erhalten.</p>}
+                            {(entry.coupon.type === '2' || entry.coupon.type === '3') && <p className="text-gray-600">Gesamt: {entry.coupon.amount}</p>}
+                            {(entry.coupon.type === '2' || entry.coupon.type === '3') && <p className="text-gray-600">Noch Verfügbar: {entry.coupon.amount - entry.usages}</p>}
+                            {(entry.coupon.type === '2' || entry.coupon.type === '3') && <p className="text-gray-600 font-semibold">Dieser Coupon wird eingelöst, um Tickets kostenfrei zu erhalten.</p>}
                             <p className="text-lg font-semibold mt-2">Typ: {typeMap[entry.coupon.type as keyof typeof typeMap]}</p>
                         </div>
                         <div className="flex justify-between items-center gap-2">

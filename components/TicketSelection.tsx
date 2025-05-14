@@ -100,6 +100,9 @@ export default function TicketSelection({
 		if (coupon && coupon.coupon.type === "2") {
 			remaining = remaining + coupon.coupon.amount;
 		}
+		if (coupon && coupon.coupon.type === "3") {
+			remaining = remaining + coupon.coupon.amount;
+		}
 		if (moment.tz("Europe/Berlin") > moment.tz(event.coupon_end, "Europe/Berlin")) {
 			remaining = event.tickets - currentTickets.length
 		}
@@ -125,9 +128,15 @@ export default function TicketSelection({
 			if (!hasSponsorticket) {
 				setTicketSelection([...ticketSelection, { category: "Sponsorticket", amount: 0 }]);
 			}
+		} else if (coupon && coupon.coupon.type === "3") {
+			// add the TicketSelection with 0
+			const hasSponsorticket = ticketSelection.find((t) => t.category === "GS Sponsorticket");
+			if (!hasSponsorticket) {
+				setTicketSelection([...ticketSelection, { category: "GS Sponsorticket", amount: 0 }]);
+			}
 		} else {
 			// remove the TicketSelection with 0
-			setTicketSelection(ticketSelection.filter((t) => t.category !== "Sponsorticket"));
+			setTicketSelection(ticketSelection.filter((t) => t.category !== "Sponsorticket" && t.category !== "GS Sponsorticket"));
 		}
 	};
 
@@ -197,6 +206,9 @@ export default function TicketSelection({
 			if (coupon && coupon.coupon.type === "2") {
 				prices = [...prices, { id: 6, name: "Sponsorticket", price: 0, created_at: "", description: "" }];
 			}
+			if (coupon && coupon.coupon.type === "3") {
+				prices = [...prices, { id: 7, name: "GS Sponsorticket", price: 0, created_at: "", description: "" }];
+			}
 			console.log(ticketSelection, memberTicketSelection);
 			const session = await createCheckoutSession({
 				eventId: event.id,
@@ -260,6 +272,11 @@ export default function TicketSelection({
 							{coupon.coupon.type === "2" && (
 								<span className="font-medium text-green-500">
 									Du hast die Kateogrie Sponsorticket freigeschaltet. Verfügbar: {coupon.coupon.amount - coupon.used} Stück
+								</span>
+							)}
+							{coupon.coupon.type === "3" && (
+								<span className="font-medium text-green-500">
+									Du hast die Kateogrie GS Sponsorticket freigeschaltet. Verfügbar: {coupon.coupon.amount - coupon.used} Stück
 								</span>
 							)}
 							{coupon.coupon.type === "1" && (
@@ -378,6 +395,60 @@ export default function TicketSelection({
 												setTicketSelection(
 													ticketSelection.map((t) =>
 														t.category === "Sponsorticket"
+															? {
+																...t,
+																amount: amount + remaining,
+															}
+															: t,
+													),
+												);
+												return;
+											}
+											setTicketSelection(newTickets);
+										}}
+										className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent"
+									/>
+								</div>
+							)}
+							{coupon && coupon.coupon.type === "3" && (
+								<div className="h-full flex flex-col justify-between">
+									<label
+										htmlFor="GS Sponsorticket"
+										className="block text-sm font-medium mb-2"
+									>
+										GS Sponsorticket (0€)
+									</label>
+									<input
+										id="GS Sponsorticket"
+										type="number"
+										min="0"
+										value={
+											ticketSelection.find((t) => t.category === "GS Sponsorticket")
+												?.amount || 0
+										}
+										max={coupon.coupon.amount - coupon.used}
+										onChange={(e) => {
+											let amount = Number.parseInt(e.target.value);
+											if (amount > coupon.coupon.amount - coupon.used) {
+												amount = coupon.coupon.amount - coupon.used;
+											}
+											const allowed = getRemainingTickets()
+											const newTickets = ticketSelection.map((t) =>
+												t.category === "GS Sponsorticket"
+													? {
+														...t,
+														amount,
+													}
+													: t,
+											);
+											const remaining =
+												allowed -
+												newTickets.reduce((acc, t) => acc + t.amount, 0);
+
+											if (remaining < 0) {
+												setTicketSelection(
+													ticketSelection.map((t) =>
+														t.category === "GS Sponsorticket"
 															? {
 																...t,
 																amount: amount + remaining,

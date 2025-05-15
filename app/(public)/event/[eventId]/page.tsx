@@ -52,7 +52,7 @@ export default async function EventPage({
 			couponId
 		`)
 		.eq("event_id", event.id)
-
+		.filter("bought_at", "not.is", null);
 	if (ticketError || ticketStatus !== 200) {
 		console.error(ticketError);
 		redirect("/error");

@@ -136,7 +136,7 @@ export function AdminTicketScanComponent({
 			if (!updatedTickets) return;
 			setTickets(updatedTickets);
 			toast.success(
-				`Ticket ${ticketId} wurde entwertet. Scannen Sie das nächste Ticket.`,
+				`${ticketId} wurde entwertet. ${getTicketCategory(response.ticket_category)} ${response.couponId ? `(Coupon ID: ${response.couponId})` : ""}`,
 				{
 					richColors: true,
 					closeButton: true,

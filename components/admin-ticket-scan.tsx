@@ -148,7 +148,7 @@ export function AdminTicketScanComponent({
 	};
 
 	return (
-		<div className="space-y-4 mb-4">
+		<div className="space-y-2 mb-4">
 			<Card className="shadow-none border-0">
 				<CardContent className="p-0">
 					<div className="space-y-3">

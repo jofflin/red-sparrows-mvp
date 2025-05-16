@@ -44,7 +44,7 @@ export default async function ScanPage({ params }: { params: { eventId: string }
                   <ArrowLeft className="h-4 w-4" />
                 </Link>
               </Button>
-              <h1 className="text-2xl font-bold text-gray-900">{event.name}</h1>
+              <h1 className="text-md font-bold text-gray-900">{event.name}</h1>
             </div>
           </div>
         </header>

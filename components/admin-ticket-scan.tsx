@@ -167,8 +167,7 @@ export function AdminTicketScanComponent({
 								// 	},
 								// }}
 								components={{
-									zoom: false,
-									audio: false,
+									zoom: false
 								}}
 								paused={!scanningActive}
 								allowMultiple={false}
@@ -223,7 +222,7 @@ export function AdminTicketScanComponent({
 						<CardDescription className="text-sm">{`ID: ${lastScannedTicket.scan_id}`}</CardDescription>
 						<CardDescription className="text-sm">{`Entwertet am: ${moment.tz(lastScannedTicket.redeemed_at, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}`}</CardDescription>
 						<CardDescription className="text-sm">{`Kategorie: ${getTicketCategory(lastScannedTicket.ticket_category)}`}</CardDescription>
-						{lastScannedTicket.couponId && <CardDescription className="text-sm">{`Coupon ID: ${lastScannedTicket.couponId}`}</CardDescription>}
+						{lastScannedTicket.couponId && <CardDescription className="texst-sm">{`Coupon ID: ${lastScannedTicket.couponId}`}</CardDescription>}
 					</CardHeader>
 				</Card>
 			)}

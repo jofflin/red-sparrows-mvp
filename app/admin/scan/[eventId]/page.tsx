@@ -36,7 +36,7 @@ export default async function ScanPage({ params }: { params: { eventId: string }
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <header className="pt-6">
+        <header className="pt-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Button asChild variant="ghost" size="icon" className="hover:bg-gray-200">

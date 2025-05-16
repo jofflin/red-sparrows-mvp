@@ -54,8 +54,8 @@ dependencies:
     specifier: ^1.2.2
     version: 1.2.2(next@14.1.3)(react@18.2.0)
   '@yudiel/react-qr-scanner':
-    specifier: 2.0.8
-    version: 2.0.8(react-dom@18.2.0)(react@18.2.0)
+    specifier: 2.3.1
+    version: 2.3.1(@types/emscripten@1.40.1)(react-dom@18.2.0)(react@18.2.0)
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -1589,8 +1589,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@rollup/rollup-linux-x64-gnu@4.22.0:
-    resolution: {integrity: sha512-tsSWy3YQzmpjDKnQ1Vcpy3p9Z+kMFbSIesCdMNgLizDWFhrLZIoN21JSq01g+MZMDFF+Y1+4zxgrlqPjid5ohg==}
+  /@rollup/rollup-linux-x64-gnu@4.40.2:
+    resolution: {integrity: sha512-lG7Xa+BmBNwpjmVUbmyKxdQJ3Q6whHjMjzQplOs5Z+Gj7mxPtWakGHqzMqNER68G67kmCX9qX57aRsW5V0VOng==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
@@ -1658,7 +1658,7 @@ packages:
       '@supabase/supabase-js': 2.45.4
       cookie: 0.6.0
     optionalDependencies:
-      '@rollup/rollup-linux-x64-gnu': 4.22.0
+      '@rollup/rollup-linux-x64-gnu': 4.40.2
     dev: false
 
   /@supabase/storage-js@2.7.0:
@@ -1706,12 +1706,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@types/dom-webcodecs@0.1.11:
-    resolution: {integrity: sha512-yPEZ3z7EohrmOxbk/QTAa0yonMFkNkjnVXqbGb7D4rMr+F1dGQ8ZUFxXkyLLJuiICPejZ0AZE9Rrk9wUCczx4A==}
-    dev: false
-
-  /@types/emscripten@1.39.13:
-    resolution: {integrity: sha512-cFq+fO/isvhvmuP/+Sl4K4jtU6E23DoivtbO4r50e3odaxAiVdbfSYRDdJ4gCdxx+3aRjhphS5ZMwIH4hFy/Cw==}
+  /@types/emscripten@1.40.1:
+    resolution: {integrity: sha512-sr53lnYkQNhjHNN0oJDdUm5564biioI5DuOpycufDVK7D3y+GR3oUswe2rlwY1nPNyusHbrJ9WoTyIHl4/Bpwg==}
     dev: false
 
   /@types/json5@0.0.29:
@@ -1847,16 +1843,18 @@ packages:
       server-only: 0.0.1
     dev: false
 
-  /@yudiel/react-qr-scanner@2.0.8(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-/7WHsdC1a/Z909J2zZxqgpUQ1iI554fZxIagucH/tFu1MhZkNIeykYI1OdZgDEwV4CzuSi+h90wwNrhmETcmRw==}
+  /@yudiel/react-qr-scanner@2.3.1(@types/emscripten@1.40.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-fE7217QvMKT/AxAEeKIheFhkKO13PSGHiqJfg4dLK/SGPpelpXNpZZ0Qeph1Cm08/AqMlGhvzQbCmoPeD/VVIg==}
     peerDependencies:
-      react: ^17 || ^18
-      react-dom: ^17 || ^18
+      react: ^17 || ^18 || ^19
+      react-dom: ^17 || ^18 || ^19
     dependencies:
-      barcode-detector: 2.2.8
+      barcode-detector: 3.0.3(@types/emscripten@1.40.1)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      webrtc-adapter: 9.0.1
+      webrtc-adapter: 9.0.3
+    transitivePeerDependencies:
+      - '@types/emscripten'
     dev: false
 
   /abbrev@2.0.0:
@@ -1898,7 +1896,7 @@ packages:
       react: 18.2.0
       resize-observer-polyfill: 1.5.1
       screenfull: 5.2.0
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: false
 
   /ajv@6.12.6:
@@ -2200,11 +2198,12 @@ packages:
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  /barcode-detector@2.2.8:
-    resolution: {integrity: sha512-m3YGKrcNBTYOIWD+FRDJzNU+qbVJ1xI4Th9OAZBITB4rZX13ShZVO8tnSM8ceglLV2yMovwiphr6P+SNIfjzOg==}
+  /barcode-detector@3.0.3(@types/emscripten@1.40.1):
+    resolution: {integrity: sha512-N07CNbpudOB3oIYm0tvaezCM6zy9HOlYnUCBhX6Q5UGhnqngyBgOf/p/5ZhqHxsf9/QYy5dX95RrblIs0hNaiw==}
     dependencies:
-      '@types/dom-webcodecs': 0.1.11
-      zxing-wasm: 1.2.12
+      zxing-wasm: 2.1.2(@types/emscripten@1.40.1)
+    transitivePeerDependencies:
+      - '@types/emscripten'
     dev: false
 
   /base64-js@0.0.8:
@@ -5510,6 +5509,10 @@ packages:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
     dev: false
 
+  /tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+    dev: false
+
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -5521,6 +5524,11 @@ packages:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
     engines: {node: '>=10'}
     dev: true
+
+  /type-fest@4.41.0:
+    resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
+    engines: {node: '>=16'}
+    dev: false
 
   /typed-array-buffer@1.0.2:
     resolution: {integrity: sha512-gEymJYKZtKXzzBzM4jqa9w6Q1Jjm7x2d+sh19AdsD4wqnMPDYyvwpsIc2Q/835kHuo3BEQ7CjelGhfTsoBb2MQ==}
@@ -5673,8 +5681,8 @@ packages:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
     dev: false
 
-  /webrtc-adapter@9.0.1:
-    resolution: {integrity: sha512-1AQO+d4ElfVSXyzNVTOewgGT/tAomwwztX/6e3totvyyzXPvXIIuUUjAmyZGbKBKbZOXauuJooZm3g6IuFuiNQ==}
+  /webrtc-adapter@9.0.3:
+    resolution: {integrity: sha512-5fALBcroIl31OeXAdd1YUntxiZl1eHlZZWzNg3U4Fn+J9/cGL3eT80YlrsWGvj2ojuz1rZr2OXkgCzIxAZ7vRQ==}
     engines: {node: '>=6.0.0', npm: '>=3.10.0'}
     dependencies:
       sdp: 3.2.0
@@ -5810,8 +5818,11 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  /zxing-wasm@1.2.12:
-    resolution: {integrity: sha512-UzQvEA5Hv4Nd/jJoKq7UN/jfkQwEDMASqoi1unlXrEgOB9rseLpmNTywcv4/2d9aMqKjfczyk3T25r6DYxAb7g==}
+  /zxing-wasm@2.1.2(@types/emscripten@1.40.1):
+    resolution: {integrity: sha512-h89XsAmUKGDGJKnAHpHlHiEM5cXFh3ShVKQowQRqcP3IhBviWvjh2kpRDDSbDUGqlb44wDzfUroPwzo4zQRsVw==}
+    peerDependencies:
+      '@types/emscripten': '>=1.39.6'
     dependencies:
-      '@types/emscripten': 1.39.13
+      '@types/emscripten': 1.40.1
+      type-fest: 4.41.0
     dev: false

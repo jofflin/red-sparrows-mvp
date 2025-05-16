@@ -36,12 +36,15 @@ moment.locale("de");
 export type AdminTicketScanComponentProps = {
 	initialTickets: Database["public"]["Tables"]["tickets"]["Row"][];
 	event: Database["public"]["Tables"]["events"]["Row"];
+	ticketCategories: Database["public"]["Tables"]["ticket_categories"]["Row"][];
 };
 
 export function AdminTicketScanComponent({
 	initialTickets,
 	event,
+	ticketCategories,
 }: AdminTicketScanComponentProps) {
+	const [lastScannedTicket, setLastScannedTicket] = useState<Database["public"]["Tables"]["tickets"]["Row"] | null>(null);
 	const [tickets, setTickets] = useState(initialTickets);
 	const [scanningActive, setScanningActive] = useState(false);
 	const [manualTicketId, setManualTicketId] = useState("");
@@ -53,6 +56,11 @@ export function AdminTicketScanComponent({
 
 	const cancelScanning = () => {
 		setScanningActive(false);
+	};
+
+	const getTicketCategory = (ticketId: number) => {
+		const ticketCategory = ticketCategories.find((ticketCategory) => ticketCategory.id === ticketId);
+		return ticketCategory?.name;
 	};
 
 	const handleSuccessfullScan = (codes: IDetectedBarcode[]) => {
@@ -100,7 +108,7 @@ export function AdminTicketScanComponent({
 		}
 
 		if (ticket.redeemed_at) {
-			toast.error(`Ticket ${ticketId} wurde bereits gescannt.`, {
+			toast.error(`Ticket ${ticketId}\n wurde bereits gescannt.`, {
 				richColors: true,
 				closeButton: true,
 				dismissible: true,
@@ -123,6 +131,7 @@ export function AdminTicketScanComponent({
 						: ticket,
 				),
 			);
+			setLastScannedTicket(response);
 			const updatedTickets = await getEventTickets(event.id);
 			if (!updatedTickets) return;
 			setTickets(updatedTickets);
@@ -141,29 +150,22 @@ export function AdminTicketScanComponent({
 	return (
 		<div className="space-y-4 mb-4">
 			<Card className="shadow-none border-0">
-				<CardHeader className="px-4 py-0">
-					<CardTitle className="text-lg font-semibold">
-						Ticket Scannen (Noch {tickets.filter((t) => !t.redeemed_at).length}{" "}
-						Tickets)
-					</CardTitle>
-					<CardDescription className="text-sm">{`${event.name} - ${moment.tz(event.start_time, "Europe/Berlin").format("HH:mm")} Uhr`}</CardDescription>
-				</CardHeader>
 				<CardContent className="p-0">
 					<div className="space-y-3">
-						<div className="relative bg-gray-100 w-full">
+						<div className="bg-gray-100 w-full">
 							<Scanner
 								onScan={(barcode) => handleSuccessfullScan(barcode)}
 								onError={(error) => handleScanError(error)}
 								constraints={{
 									facingMode: "environment",
 								}}
-								styles={{
-									container: {
-										width: "100%",
-										height: "400px",
-										margin: "0 auto",
-									},
-								}}
+								// styles={{
+								// 	container: {
+								// 		width: "100%",
+								// 		height: "350px",
+								// 		margin: "0 auto",
+								// 	},
+								// }}
 								components={{
 									zoom: false,
 									audio: false,
@@ -192,12 +194,6 @@ export function AdminTicketScanComponent({
 							)}
 							<div className="mt-4">
 								<form onSubmit={handleManualEntry} className="space-y-2">
-									<Label
-										htmlFor="manual-ticket-id"
-										className="text-sm font-medium"
-									>
-										Ticket ID manuell Eingabe
-									</Label>
 									<div className="flex space-x-2">
 										<Input
 											id="manual-ticket-id"
@@ -209,7 +205,7 @@ export function AdminTicketScanComponent({
 											className="flex-1 h-12 bg-white border-secondary-400 focus:border-secondary-400 focus:ring-secondary-400"
 										/>
 										<Button type="submit" variant="outline" className="h-12">
-											Absenden
+											Überprüfen
 										</Button>
 									</div>
 								</form>
@@ -218,8 +214,21 @@ export function AdminTicketScanComponent({
 					</div>
 				</CardContent>
 			</Card>
+			{lastScannedTicket && (
+				<Card className="mt-4">
+					<CardHeader className="px-4 py-3">
+						<CardTitle className="text-lg font-semibold">
+							Zuletzt gescanntes Ticket
+						</CardTitle>
+						<CardDescription className="text-sm">{`ID: ${lastScannedTicket.scan_id}`}</CardDescription>
+						<CardDescription className="text-sm">{`Entwertet am: ${moment.tz(lastScannedTicket.redeemed_at, "Europe/Berlin").format("DD.MM.YYYY HH:mm")}`}</CardDescription>
+						<CardDescription className="text-sm">{`Kategorie: ${getTicketCategory(lastScannedTicket.ticket_category)}`}</CardDescription>
+						{lastScannedTicket.couponId && <CardDescription className="text-sm">{`Coupon ID: ${lastScannedTicket.couponId}`}</CardDescription>}
+					</CardHeader>
+				</Card>
+			)}
 
-			<Card className="shadow-none border-0 mt-4">
+			<Card className="mt-4">
 				<CardHeader className="px-4 py-3">
 					<CardTitle className="text-lg font-semibold">
 						Verkaufte Tickets ({tickets.filter((t) => t.redeemed_at).length} von{" "}

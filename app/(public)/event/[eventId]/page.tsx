@@ -194,7 +194,7 @@ export default async function EventPage({
 				{/* Ticket Selection */}
 				<div className="lg:col-span-1">
 					<div className="sticky top-20">
-						{moment.tz(event.start_time, "Europe/Berlin").isBefore(moment.tz("Europe/Berlin")) ? (
+						{moment.tz(event.presale_end, "Europe/Berlin").isBefore(moment.tz("Europe/Berlin")) ? (
 							<Card>
 								<CardHeader>
 									<CardTitle>Der Vorverkauf hat geendet</CardTitle>
